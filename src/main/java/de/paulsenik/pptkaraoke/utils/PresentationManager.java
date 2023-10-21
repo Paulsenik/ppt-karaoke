@@ -3,6 +3,7 @@ package de.paulsenik.pptkaraoke.utils;
 import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
 import de.paulsenik.jpl.utils.PSystem;
+import java.sql.Array;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,53 +15,55 @@ import java.util.Map;
 
 public class PresentationManager {
 
-    public List<Presentation> presentations = new ArrayList<>();
+  public List<Presentation> presentations = new ArrayList<>();
 
-    private String presentationDir;
-    private String folderName;
+  private String presentationDir;
+  private String folderName;
 
-    public PresentationManager(String presentationDir) {
-        initPresentations(presentationDir);
+  public PresentationManager(String presentationDir) {
+    initPresentations(presentationDir);
+  }
+
+  private void initPresentations(String presentationDir) {
+    for (String folderPath : PFolder.getSubFolders(presentationDir)) {
+      JSONArray storage = getPresentationInfo(presentationDir, PFolder.getName(folderPath));
+      for (String filePath : PFolder.getFiles(folderPath, null)) {
+        // TODO
+      }
+    }
+  }
+
+  private JSONArray getPresentationInfo(String presentationDir, String folderName) {
+    PFile file = new PFile(presentationDir + PSystem.getFileSeparator() + folderName + ".json");
+    if (!file.exists()) {
+      return null;
     }
 
-    private void initPresentations(String presentationDir) {
-        for (String folderPath : PFolder.getSubFolders(presentationDir)) {
-            JSONArray storage = getPresentationInfo(presentationDir, PFolder.getName(folderPath));
-            for (String filePath : PFolder.getFiles(folderPath, null)) {
-                // TODO
-            }
-        }
+    try {
+      return new JSONArray(file.getFileAsString());
+    } catch (JSONException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Saves all presentation-Infos
+   *
+   * @param presentationDir
+   * @return
+   */
+  private boolean savePresentationInfo(String presentationDir) {
+    JSONArray storage = new JSONArray();
+
+    for (Presentation p : presentations) {
+      storage.put(p.getSerialized());
     }
 
-    private JSONArray getPresentationInfo(String presentationDir, String folderName) {
-        PFile file = new PFile(presentationDir + PSystem.getFileSeparator() + folderName + ".json");
-        if (!file.exists()) {
-            return null;
-        }
+    // TODO
 
-        try {
-            return new JSONArray(file.getFileAsString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private boolean SavePresentationInfo(String presentationDir) {
-        Map<String, JSONArray> storage = new HashMap<>();
-
-        for (Presentation p : presentations) {
-            JSONArray json = storage.get(p.name());
-            if (json == null) {
-                json = new JSONArray();
-                storage.put(p.name(), json);
-            }
-
-            JSONObject obj = new JSONObject();
-        }
-
-        return true;
-    }
+    return true;
+  }
 
 
 }
