@@ -31,7 +31,7 @@ public class UI extends PUIFrame {
   private PUIText folderButton;
   private PUIText presentationDisplay;
   private PUIText shuffleButton;
-  private PUIElement filterButton;
+  private PUIElement menuFilterButton;
 
   // Lists
   private PUIList presentationList;
@@ -39,6 +39,8 @@ public class UI extends PUIFrame {
   private PUIList propertyDisplay;
 
   public UI() {
+    PUIElement.setDefaultColor(1, Color.WHITE);
+    PUIElement.setDefaultColor(10, new Color(219, 130, 36));
     initElements();
     folderChooser = new JFileChooser();
     folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -70,6 +72,22 @@ public class UI extends PUIFrame {
       int[] X = {x + 5, x + 5, x + w - 5};
       int[] Y = {y + 5, y + h - 5, y + h / 2};
       g.fillPolygon(X, Y, 3);
+    });
+
+    menuFilterButton = new PUIElement(this);
+    menuFilterButton.setDraw((g, x, y, w, h) -> {
+      if (menu == 2) {
+        g.setColor(Color.WHITE);
+      } else {
+        g.setColor(Color.gray);
+      }
+      int[] X = {x + 5, x + w - 10, x + w / 2};
+      int[] Y = {y + 5, y + 5, y + h / 3 * 2};
+      g.fillPolygon(X, Y, 3);
+      g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
+    });
+    menuFilterButton.addActionListener(puiElement -> {
+      changeMenu(2);
     });
 
     folderButton = new PUIText(this, "Folder");
@@ -114,18 +132,6 @@ public class UI extends PUIFrame {
         presentationDisplay.setMetadata(p);
         updateElements();
       }
-    });
-
-    filterButton = new PUIElement(this);
-    filterButton.setDraw((g, x, y, w, h) -> {
-      g.setColor(Color.ORANGE);
-      int[] X = {x + 5, x + w - 10, x + w / 2};
-      int[] Y = {y + 5, y + 5, y + h / 3 * 2};
-      g.fillPolygon(X, Y, 3);
-      g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
-    });
-    filterButton.addActionListener(puiElement -> {
-      changeMenu(2);
     });
 
     // Properties
@@ -179,7 +185,8 @@ public class UI extends PUIFrame {
   public void updateElements() {
     super.updateElements();
     menuSettingsButton.setBounds(0, 0, 80, 80);
-    menuPlayButton.setBounds(80, 0, 80, 80);
+    menuFilterButton.setBounds(80, 0, 80, 80);
+    menuPlayButton.setBounds(160, 0, 80, 80);
 
     if (menu == 0) { //settings
       folderButton.setEnabled(true);
@@ -196,20 +203,16 @@ public class UI extends PUIFrame {
     if (menu == 1) { //play
       presentationDisplay.setEnabled(true);
       shuffleButton.setEnabled(true);
-      filterButton.setEnabled(true);
       {
         int textLength = Math.min(30, Math.max(presentationDisplay.getText().length() / 2, 10));
         int textHeight = w() / textLength;
         presentationDisplay.setBounds(10, (h() - textHeight) / 2, w() - 20, textHeight);
         shuffleButton.setBounds((w() - 150) / 2, presentationDisplay.getY() + textHeight + 10, 150,
             80);
-        filterButton.setBounds(shuffleButton.getX() - 70, shuffleButton.getY() + 10, 60,
-            60);
       }
     } else {
       presentationDisplay.setEnabled(false);
       shuffleButton.setEnabled(false);
-      filterButton.setEnabled(false);
     }
 
     if (menu == 0 || menu == 2) {
@@ -232,7 +235,7 @@ public class UI extends PUIFrame {
   public void selectProperty(int property) {
     ArrayList<PUIElement> elements = properties.getElements();
     elements.get(selectedProperty).setBackgroundColor(PUIElement.getDefaultColor(0));
-    elements.get(property).setBackgroundColor(Color.gray);
+    elements.get(property).setBackgroundColor(PUIElement.getDefaultColor(10));
     this.selectedProperty = property;
 
     updatePropertyDisplay();
@@ -294,6 +297,10 @@ public class UI extends PUIFrame {
     ArrayList<PUIElement> elements = new ArrayList<>();
 
     PUIAction action = puiElement -> {
+      for (PUIElement e : presentationList.getElements()) {
+        e.setBackgroundColor(PUIElement.getDefaultColor(0));
+      }
+      puiElement.setBackgroundColor(PUIElement.getDefaultColor(10));
       selectedPresentation = Main.presentationManager.presentations.get(
           ((PUIText) puiElement).getText());
       updatePropertyDisplay();
@@ -314,7 +321,7 @@ public class UI extends PUIFrame {
     }
 
     // conditions
-    if (menu != 1) {
+    if (newMenu == 1) {
       if (Main.presentationManager == null) {
         return;
       }
