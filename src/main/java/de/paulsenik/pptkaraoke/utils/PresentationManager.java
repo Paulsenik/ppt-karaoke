@@ -46,25 +46,6 @@ public class PresentationManager {
     }
   }
 
-  public static void main(String[] args) throws InterruptedException {
-    PresentationManager m = new PresentationManager("/home/paulsen/Documents/PPT/");
-    List<String> l = new ArrayList<>();
-    l.add("a123  ");
-    l.add("a 234 ");
-    l.add("a  345");
-    m.presentations.put("test", new Presentation("test", "_", 2020, Language.ENGLISH, l, l));
-
-    Set<Language> langs = new HashSet<>();
-    langs.add(Language.ENGLISH);
-    langs.add(Language.GERMAN);
-
-    m.savePresentationInfo();
-    Set<String> tags = new HashSet<>();
-    tags.add("a  345");
-    List<Presentation> p = m.filter(null, langs, tags, null);
-    System.out.println(p.toString());
-  }
-
   private void initPresentations() {
     String[] subFolders = PFolder.getSubFolders(presentationDir);
     JSONArray rawData = getRawPresentationInfo(presentationDir);
