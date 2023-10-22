@@ -45,13 +45,16 @@ public class PresentationManager {
     l.add("a123  ");
     l.add("a 234 ");
     l.add("a  345");
-    m.presentations.add(new Presentation("test", "_", 2020, Language.GERMAN, l, l));
+    m.presentations.add(new Presentation("test", "_", 2020, Language.ENGLISH, l, l));
+
+    Set<Language> langs = new HashSet<>();
+    langs.add(Language.ENGLISH);
+    langs.add(Language.GERMAN);
 
     m.savePresentationInfo();
     Set<String> tags = new HashSet<>();
-    tags.add("a 234 ");
     tags.add("a  345");
-    List<Presentation> p = m.filter(null, null, tags, tags);
+    List<Presentation> p = m.filter(null, langs, tags, null);
     System.out.println(p.toString());
   }
 
@@ -75,9 +78,30 @@ public class PresentationManager {
           p = new Presentation(filePath);
           System.out.println("[PresentationManager] :: initialized :" + filePath);
         } else {
-          List<String> tags = new ArrayList<>();
-          List<String> topics = new ArrayList<>();
           Language language = Language.UNDEFINED;
+          try {
+            language = jsonObj.getEnum(Language.class, "language");
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+
+          List<String> tags = new ArrayList<>();
+          try {
+            for (Object obj : jsonObj.getJSONArray("tags")) {
+              tags.add((String) obj);
+            }
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+
+          List<String> topics = new ArrayList<>();
+          try {
+            for (Object obj : jsonObj.getJSONArray("topics")) {
+              topics.add((String) obj);
+            }
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
 
           p = new Presentation(filePath, language, tags, topics);
           System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
