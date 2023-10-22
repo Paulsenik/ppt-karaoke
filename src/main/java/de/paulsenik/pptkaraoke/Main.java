@@ -13,7 +13,6 @@ import java.io.IOException;
 public class Main {
 
   public static void main(String[] args) throws IOException {
-    open(new Presentation("./.gitignore"));
 
     if (PUIElement.useGBC != PUIElement.useGBC) {
       UI ui = new UI();

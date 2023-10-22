@@ -3,6 +3,7 @@ package de.paulsenik.pptkaraoke.utils;
 import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
 import de.paulsenik.jpl.utils.PSystem;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +22,13 @@ public class PresentationManager {
   private String folderName;
 
   public PresentationManager(String presentationDir) {
-    if (presentationDir == null || presentationDir.isBlank()) {
+    if (presentationDir == null || presentationDir.isBlank() || !(new File(
+        presentationDir).exists())) {
       this.presentationDir = System.getProperty("user.dir");
     } else {
       this.presentationDir = new PFile(presentationDir).getAbsolutePath();
     }
-    System.out.println(this.presentationDir);
+    System.out.println("[PresentationManager] :: Presentation-Dir :" + this.presentationDir);
     try {
       initPresentations();
     } catch (Exception e) {
@@ -35,37 +37,47 @@ public class PresentationManager {
     }
   }
 
-  public static void main(String[] args) {
-
-    ArrayList<String> test = new ArrayList<>();
-    test.add("qa35uhz");
-    test.add("qa35uh275z");
-    test.add("2457qa35uhz");
-    test.add("qa324575uhz");
-    test.add("qa35uh3246z");
-    Presentation p = new Presentation("asdf", "adf", 234, test, test, Language.ENGLISH);
-    Presentation p2 = new Presentation("fhatj", "2436afhze", 246, test, test, Language.ENGLISH);
-
+  public static void main(String[] args) throws InterruptedException {
     PresentationManager m = new PresentationManager("/home/paulsen/Documents/PPT/");
-    m.presentations.add(p);
-    m.presentations.add(p2);
+
+//    try {
+//      Main.open(new Presentation("/home/paulsen/Documents/PPT/karaoke.json"));
+//    } catch (IOException e) {
+//      throw new RuntimeException(e);
+//    }
+
     m.savePresentationInfo();
+    Thread.sleep(1000);
   }
 
   private void initPresentations() {
     String[] subFolders = PFolder.getSubFolders(presentationDir);
     JSONArray rawData = getRawPresentationInfo(presentationDir);
 
-    if (subFolders == null || rawData == null) {
+    if (subFolders == null) {
       return;
     }
 
-    Map<String, JSONObject> data = getPresentationInfo(rawData);
+    Map<String, JSONObject> data = rawData == null ? null : getPresentationInfo(rawData);
 
     for (String folderPath : subFolders) {
       for (String filePath : PFolder.getFiles(folderPath, null)) {
-        // TODO
-        System.out.println(filePath);
+        String name = PFile.getName(filePath);
+        JSONObject jsonObj = data == null ? null : data.get(name);
+
+        Presentation p;
+        if (jsonObj == null) {
+          p = new Presentation(filePath);
+          System.out.println("[PresentationManager] :: initialized :" + filePath);
+        } else {
+          List<String> tags = new ArrayList<>();
+          List<String> topics = new ArrayList<>();
+          Language language = Language.ENGLISH;
+
+          p = new Presentation(filePath, tags, topics, language);
+          System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
+        }
+        presentations.add(p);
       }
     }
   }

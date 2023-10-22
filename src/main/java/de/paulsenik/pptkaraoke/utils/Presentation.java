@@ -21,10 +21,10 @@ public record Presentation(
         Language.ENGLISH);
   }
 
-  public Presentation(String fileLocation, List<String> tags, List<String> topic,
+  public Presentation(String fileLocation, List<String> tags, List<String> topics,
       Language language) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation), getYear(fileLocation),
-        tags, topic, language);
+        tags, topics, language);
   }
 
   private static int getYear(String folderLocation) {
