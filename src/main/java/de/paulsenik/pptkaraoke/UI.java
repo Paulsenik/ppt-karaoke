@@ -16,9 +16,9 @@ import javax.swing.JFileChooser;
 public class UI extends PUIFrame {
 
   /**
-   * 0 = Settings-Menu 1 = Play-Menu
+   * 0 = Settings-Menu; 1 = Play-Menu; 2 = Filter-Menu
    */
-  private int menu = 0;
+  private int menu = 1;
 
   // MISC
   private JFileChooser folderChooser;
@@ -30,6 +30,11 @@ public class UI extends PUIFrame {
   private PUIText presentationDisplay;
   private PUIText shuffleButton;
   private PUIElement filterButton;
+  // // Properties
+  private PUIText yearButton;
+  private PUIText languageButton;
+  private PUIText tagButton;
+  private PUIText topicButton;
 
   // Lists
   private PUIList presentationList;
@@ -99,7 +104,8 @@ public class UI extends PUIFrame {
     });
 
     shuffleButton = new PUIText(this, "GET");
-    shuffleButton.setTextColor(Color.orange);
+    shuffleButton.setTextColor(Color.GREEN);
+    shuffleButton.setBackgroundColor(new Color(0, 0, 0, 0));
     shuffleButton.addActionListener(puiElement -> {
       Presentation p = Main.getRandomPresentation();
       if (p != null) {
@@ -107,6 +113,18 @@ public class UI extends PUIFrame {
         presentationDisplay.setMetadata(p);
         updateElements();
       }
+    });
+
+    filterButton = new PUIElement(this);
+    filterButton.setDraw((g, x, y, w, h) -> {
+      g.setColor(Color.ORANGE);
+      int[] X = {x + 5, x + w - 10, x + w / 2};
+      int[] Y = {y + 5, y + 5, y + h / 3 * 2};
+      g.fillPolygon(X, Y, 3);
+      g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
+    });
+    filterButton.addActionListener(puiElement -> {
+      changeMenu(3);
     });
 
     for (PUIElement e : PUIElement.registeredElements) {
@@ -133,24 +151,33 @@ public class UI extends PUIFrame {
       folderButton.setEnabled(false);
       presentationList.setEnabled(false);
     }
+
     if (menu == 1) { //play
       presentationDisplay.setEnabled(true);
       shuffleButton.setEnabled(true);
+      filterButton.setEnabled(true);
       {
         int textLength = Math.min(30, Math.max(presentationDisplay.getText().length() / 2, 10));
         int textHeight = w() / textLength;
         presentationDisplay.setBounds(10, (h() - textHeight) / 2, w() - 20, textHeight);
-
         shuffleButton.setBounds((w() - 150) / 2, presentationDisplay.getY() + textHeight + 10, 150,
             80);
+        filterButton.setBounds(shuffleButton.getX() - 70, shuffleButton.getY() + 10, 60,
+            60);
       }
     } else {
       presentationDisplay.setEnabled(false);
       shuffleButton.setEnabled(false);
+      filterButton.setEnabled(false);
+    }
+
+    if (menu == 2) {
+
+    } else {
 
     }
 
-    if (menu > 1) {
+    if (menu > 2) {
       throw new IllegalArgumentException("wrong menu-id");
     }
   }
