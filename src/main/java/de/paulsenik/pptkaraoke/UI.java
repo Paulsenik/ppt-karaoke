@@ -35,6 +35,7 @@ public class UI extends PUIFrame {
 
   // Lists
   private PUIList presentationList;
+  private PUIList filteredPresentationList;
   private PUIList properties;
   private PUIList propertyDisplay;
 
@@ -91,6 +92,7 @@ public class UI extends PUIFrame {
     });
 
     folderButton = new PUIText(this, "Folder");
+    folderButton.setBackgroundColor(new Color(199, 186, 39));
     folderButton.addActionListener(puiElement -> {
       int returnVal = folderChooser.showOpenDialog(this);
 
@@ -106,6 +108,10 @@ public class UI extends PUIFrame {
     presentationList = new PUIList(this);
     presentationList.setShowedElements(20);
     presentationList.setSliderWidth(10);
+
+    filteredPresentationList = new PUIList(this);
+    filteredPresentationList.setShowedElements(20);
+    filteredPresentationList.setSliderWidth(10);
 
     presentationDisplay = new PUIText(this, "...");
     presentationDisplay.setTextColor(Color.red);
@@ -179,25 +185,39 @@ public class UI extends PUIFrame {
       e.doPaintOverOnHover(false);
       e.doPaintOverOnPress(false);
     }
+
+    // Menu-Button
+    menuSettingsButton.setBounds(0, 0, 80, 80);
+    menuFilterButton.setBounds(80, 0, 80, 80);
+    menuPlayButton.setBounds(160, 0, 80, 80);
   }
 
   @Override
   public void updateElements() {
     super.updateElements();
-    menuSettingsButton.setBounds(0, 0, 80, 80);
-    menuFilterButton.setBounds(80, 0, 80, 80);
-    menuPlayButton.setBounds(160, 0, 80, 80);
 
     if (menu == 0) { //settings
-      folderButton.setEnabled(true);
       presentationList.setEnabled(true);
       {
-        folderButton.setBounds(getWidth() * 2 / 3 + 5, 5, getWidth() / 3 - 10, 70);
-        presentationList.setBounds(getWidth() * 2 / 3, 80, getWidth() / 3, getHeight() - 80);
+        presentationList.setBounds(20, 190, getWidth() / 3 - 30, h() - 210);
+      }
+    } else {
+      presentationList.setEnabled(false);
+    }
+
+    if (menu == 0 || menu == 2) {
+      folderButton.setEnabled(true);
+      properties.setEnabled(true);
+      propertyDisplay.setEnabled(true);
+      {
+        folderButton.setBounds(20, 100, getWidth() / 3 - 30, 90);
+        properties.setBounds(w() / 3 + 10, 190, w() / 3 - 20, h() - 210);
+        propertyDisplay.setBounds(w() / 3 * 2 + 10, 190, w() / 3 - 30, h() - 210);
       }
     } else {
       folderButton.setEnabled(false);
-      presentationList.setEnabled(false);
+      properties.setEnabled(false);
+      propertyDisplay.setEnabled(false);
     }
 
     if (menu == 1) { //play
@@ -213,18 +233,6 @@ public class UI extends PUIFrame {
     } else {
       presentationDisplay.setEnabled(false);
       shuffleButton.setEnabled(false);
-    }
-
-    if (menu == 0 || menu == 2) {
-      properties.setEnabled(true);
-      propertyDisplay.setEnabled(true);
-      {
-        properties.setBounds(10, 100, w() / 3 - 20, h() - 120);
-        propertyDisplay.setBounds(w() / 3 + 10, 100, w() / 3 - 20, h() - 120);
-      }
-    } else {
-      properties.setEnabled(false);
-      propertyDisplay.setEnabled(false);
     }
 
     if (menu > 2) {
