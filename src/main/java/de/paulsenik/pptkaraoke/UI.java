@@ -64,9 +64,9 @@ public class UI extends PUIFrame {
     });
 
     menuPlayButton = new PUIElement(this);
-    menuPlayButton.addActionListener(puiElement -> changeMenu(1));
+    menuPlayButton.addActionListener(puiElement -> changeMenu(2));
     menuPlayButton.setDraw((g, x, y, w, h) -> {
-      if (menu == 1) {
+      if (menu == 2) {
         g.setColor(Color.WHITE);
       } else {
         g.setColor(Color.gray);
@@ -78,7 +78,7 @@ public class UI extends PUIFrame {
 
     menuFilterButton = new PUIElement(this);
     menuFilterButton.setDraw((g, x, y, w, h) -> {
-      if (menu == 2) {
+      if (menu == 1) {
         g.setColor(Color.WHITE);
       } else {
         g.setColor(Color.gray);
@@ -89,7 +89,7 @@ public class UI extends PUIFrame {
       g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
     });
     menuFilterButton.addActionListener(puiElement -> {
-      changeMenu(2);
+      changeMenu(1);
     });
 
     folderButton = new PUIText(this, "Folder");
@@ -207,7 +207,7 @@ public class UI extends PUIFrame {
       presentationList.setEnabled(false);
     }
 
-    if (menu == 0 || menu == 2) {
+    if (menu == 0 || menu == 1) {
       folderButton.setEnabled(true);
       properties.setEnabled(true);
       propertyDisplay.setEnabled(true);
@@ -222,7 +222,7 @@ public class UI extends PUIFrame {
       propertyDisplay.setEnabled(false);
     }
 
-    if (menu == 2) { // filter
+    if (menu == 1) { // filter
       filteredPresentationList.setEnabled(true);
       {
         filteredPresentationList.setBounds(20, 190, getWidth() / 3 - 30, h() - 210);
@@ -231,7 +231,7 @@ public class UI extends PUIFrame {
       filteredPresentationList.setEnabled(false);
     }
 
-    if (menu == 1) { //play
+    if (menu == 2) { //play
       presentationDisplay.setEnabled(true);
       shuffleButton.setEnabled(true);
       {
@@ -312,7 +312,7 @@ public class UI extends PUIFrame {
       propertyDisplay.clearElements();
       propertyDisplay.addAllElements(displayables);
 
-    } else if (menu == 2) { // filter
+    } else if (menu == 1) { // filter
       ArrayList<PUIElement> displayables = new ArrayList<>();
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
         case "Year":
@@ -377,7 +377,7 @@ public class UI extends PUIFrame {
     }
 
     // conditions
-    if (newMenu == 1) {
+    if (newMenu == 2) {
       if (Main.presentationManager == null) {
         return;
       }
@@ -387,7 +387,7 @@ public class UI extends PUIFrame {
     updateElements();
 
     // 1-time visual updates
-    if (newMenu == 0 || newMenu == 2) {
+    if (newMenu == 0 || newMenu == 1) {
       updatePropertyDisplay();
     }
   }
