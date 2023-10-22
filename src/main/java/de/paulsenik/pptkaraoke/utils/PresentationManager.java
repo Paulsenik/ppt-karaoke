@@ -17,13 +17,20 @@ import org.json.JSONObject;
 public class PresentationManager {
 
   public static final String PPT_SAVE_FILE = "karaoke.json";
-
+  public static Set<String> presentationTypes = new HashSet<>();
   public final Map<String, Presentation> presentations = new HashMap<>();
 
   private String presentationDir;
   private String folderName;
 
   public PresentationManager(String presentationDir) {
+    presentationTypes.add("pptx");
+    presentationTypes.add("ppsx");
+    presentationTypes.add("pptm");
+    presentationTypes.add("odp");
+    presentationTypes.add("otp");
+    presentationTypes.add("pdf");
+
     if (presentationDir == null || presentationDir.isBlank() || !(new File(
         presentationDir).exists())) {
       this.presentationDir = System.getProperty("user.dir");
@@ -75,10 +82,14 @@ public class PresentationManager {
       }
 
       for (String filePath : files) {
+        if (!presentationTypes.contains(PFile.getFileType(filePath))) {
+          continue;
+        }
+
         String name = PFile.getName(filePath);
         JSONObject jsonObj = data == null ? null : data.get(name);
-
         Presentation p;
+
         if (jsonObj == null) {
           p = new Presentation(filePath);
           System.out.println("[PresentationManager] :: initialized :" + filePath);
