@@ -10,7 +10,6 @@ import de.paulsenik.pptkaraoke.utils.PresentationManager;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFileChooser;
 
 public class UI extends PUIFrame {
@@ -111,14 +110,13 @@ public class UI extends PUIFrame {
   }
 
   public void updatePresentationList() {
-    List<Presentation> presentations = Main.presentationManager.presentations;
     ArrayList<PUIElement> elements = new ArrayList<>();
 
     PUIAction action = puiElement -> {
       // TODO SELECT-Logic
     };
 
-    for (Presentation p : presentations) {
+    for (Presentation p : Main.presentationManager.presentations.values()) {
       PUIText t = new PUIText(this, p.name());
       t.addActionListener(action);
       elements.add(t);

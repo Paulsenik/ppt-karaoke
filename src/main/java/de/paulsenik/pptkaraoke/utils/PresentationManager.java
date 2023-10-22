@@ -18,7 +18,7 @@ public class PresentationManager {
 
   public static final String PPT_SAVE_FILE = "karaoke.json";
 
-  public final List<Presentation> presentations = new ArrayList<>();
+  public final Map<String, Presentation> presentations = new HashMap<>();
 
   private String presentationDir;
   private String folderName;
@@ -45,7 +45,7 @@ public class PresentationManager {
     l.add("a123  ");
     l.add("a 234 ");
     l.add("a  345");
-    m.presentations.add(new Presentation("test", "_", 2020, Language.ENGLISH, l, l));
+    m.presentations.put("test", new Presentation("test", "_", 2020, Language.ENGLISH, l, l));
 
     Set<Language> langs = new HashSet<>();
     langs.add(Language.ENGLISH);
@@ -111,7 +111,7 @@ public class PresentationManager {
           p = new Presentation(filePath, language, tags, topics);
           System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
         }
-        presentations.add(p);
+        presentations.put(p.name(), p);
       }
     }
   }
@@ -119,7 +119,7 @@ public class PresentationManager {
   public List<Presentation> filter(Set<Integer> years,
       Set<Language> languages, Set<String> tags, Set<String> topics) {
 
-    return presentations.stream().filter(p -> {
+    return presentations.values().stream().filter(p -> {
 
       if (years != null && !years.contains(p.year())) {
         return false;
@@ -190,7 +190,7 @@ public class PresentationManager {
   private boolean savePresentationInfo() {
     JSONArray storage = new JSONArray();
 
-    for (Presentation p : presentations) {
+    for (Presentation p : presentations.values()) {
       storage.put(p.getSerialized());
     }
 
