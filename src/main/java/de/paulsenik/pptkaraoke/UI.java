@@ -20,6 +20,7 @@ public class UI extends PUIFrame {
    */
   private int menu = 1;
   private int selectedProperty = 0;
+  private Presentation selectedPresentation;
 
   // MISC
   private JFileChooser folderChooser;
@@ -124,7 +125,7 @@ public class UI extends PUIFrame {
       g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
     });
     filterButton.addActionListener(puiElement -> {
-      changeMenu(3);
+      changeMenu(2);
     });
 
     // Properties
@@ -165,8 +166,8 @@ public class UI extends PUIFrame {
     properties.addElement(topicButton);
 
     propertyDisplay = new PUIList(this);
-    properties.setShowedElements(10);
-    properties.setSliderWidth(10);
+    propertyDisplay.setShowedElements(10);
+    propertyDisplay.setSliderWidth(10);
 
     for (PUIElement e : PUIElement.registeredElements) {
       e.doPaintOverOnHover(false);
@@ -213,17 +214,14 @@ public class UI extends PUIFrame {
 
     if (menu == 0 || menu == 2) {
       properties.setEnabled(true);
+      propertyDisplay.setEnabled(true);
       {
         properties.setBounds(10, 100, w() / 3 - 20, h() - 120);
+        propertyDisplay.setBounds(w() / 3 + 10, 100, w() / 3 - 20, h() - 120);
       }
     } else {
       properties.setEnabled(false);
-    }
-
-    if (menu == 2) {
-
-    } else {
-
+      propertyDisplay.setEnabled(false);
     }
 
     if (menu > 2) {
@@ -231,19 +229,74 @@ public class UI extends PUIFrame {
     }
   }
 
-  private void selectProperty(int property) {
+  public void selectProperty(int property) {
     ArrayList<PUIElement> elements = properties.getElements();
     elements.get(selectedProperty).setBackgroundColor(PUIElement.getDefaultColor(0));
     elements.get(property).setBackgroundColor(Color.gray);
     this.selectedProperty = property;
+
+    updatePropertyDisplay();
+
     updateElements();
+  }
+
+  public void updatePropertyDisplay() {
+    if (menu == 0) { // edit
+      if (selectedPresentation == null) {
+        return;
+      }
+
+      ArrayList<PUIElement> displayables = new ArrayList<>();
+      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+        case "Year":
+          displayables.add(new PUIText(this, "" + selectedPresentation.year()));
+          break;
+        case "Lang":
+          displayables.add(new PUIText(this, String.valueOf(selectedPresentation.language())));
+          break;
+        case "Tag":
+          for (String tag : selectedPresentation.tags()) {
+            PUIText t = new PUIText(this, tag);
+            t.addActionListener(puiElement -> selectedPresentation.tags().remove(tag));
+            displayables.add(t);
+          }
+          break;
+        case "Topic":
+          for (String topic : selectedPresentation.topics()) {
+            PUIText t = new PUIText(this, topic);
+            t.addActionListener(puiElement -> selectedPresentation.topics().remove(topic));
+            displayables.add(t);
+          }
+          break;
+        default:
+          throw new IllegalArgumentException("property not defined");
+      }
+      propertyDisplay.clearElements();
+      propertyDisplay.addAllElements(displayables);
+
+    } else if (menu == 2) { // filter
+      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+        case "Year":
+          break;
+        case "Lang":
+          break;
+        case "Tag":
+          break;
+        case "Topic":
+          break;
+        default:
+          throw new IllegalArgumentException("property not defined");
+      }
+    }
   }
 
   public void updatePresentationList() {
     ArrayList<PUIElement> elements = new ArrayList<>();
 
     PUIAction action = puiElement -> {
-      // TODO SELECT-Logic
+      selectedPresentation = Main.presentationManager.presentations.get(
+          ((PUIText) puiElement).getText());
+      updatePropertyDisplay();
     };
 
     for (Presentation p : Main.presentationManager.presentations.values()) {
@@ -261,7 +314,7 @@ public class UI extends PUIFrame {
     }
 
     // conditions
-    if (menu == 0) {
+    if (menu != 1) {
       if (Main.presentationManager == null) {
         return;
       }

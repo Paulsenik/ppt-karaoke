@@ -5,6 +5,8 @@ with tag-filter for a funny karaoke-night
 
 *Currently no support for nested folders in the presentation-structure*
 
+TODO: LANGUAGE-support
+
 ## Presentation-Stucture
 
 - themes (multiple)
