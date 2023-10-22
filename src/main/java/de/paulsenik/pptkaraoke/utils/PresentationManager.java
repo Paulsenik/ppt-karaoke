@@ -16,9 +16,9 @@ import org.json.JSONObject;
 
 public class PresentationManager {
 
-  public static String PPT_SAVE_FILE = "karaoke.json";
+  public static final String PPT_SAVE_FILE = "karaoke.json";
 
-  private final List<Presentation> presentations = new ArrayList<>();
+  public final List<Presentation> presentations = new ArrayList<>();
 
   private String presentationDir;
   private String folderName;
@@ -69,7 +69,12 @@ public class PresentationManager {
     Map<String, JSONObject> data = rawData == null ? null : getPresentationInfo(rawData);
 
     for (String folderPath : subFolders) {
-      for (String filePath : PFolder.getFiles(folderPath, null)) {
+      String[] files = PFolder.getFiles(folderPath, null);
+      if (files == null) {
+        continue;
+      }
+
+      for (String filePath : files) {
         String name = PFile.getName(filePath);
         JSONObject jsonObj = data == null ? null : data.get(name);
 

@@ -4,11 +4,14 @@ import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
 import de.paulsenik.jpl.utils.PSystem;
 import de.paulsenik.pptkaraoke.utils.Presentation;
+import de.paulsenik.pptkaraoke.utils.PresentationManager;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
 public class Main {
+
+  public static PresentationManager presentationManager;
 
   public static void main(String[] args) throws IOException {
     UI ui = new UI();
