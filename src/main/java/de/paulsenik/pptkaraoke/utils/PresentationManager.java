@@ -122,9 +122,11 @@ public class PresentationManager {
       if (languages != null && !languages.contains(p.language())) {
         return false;
       }
+      // TODO toggle-able containsAll or contains any
       if (tags != null && !p.tags().containsAll(tags)) {
         return false;
       }
+      // TODO toggle-able containsAll or contains any
       if (topics != null && !p.topics().containsAll(topics)) {
         return false;
       }
