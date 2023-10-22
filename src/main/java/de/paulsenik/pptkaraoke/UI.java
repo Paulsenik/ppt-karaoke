@@ -5,6 +5,7 @@ import de.paulsenik.jpl.ui.PUIList;
 import de.paulsenik.jpl.ui.PUIText;
 import de.paulsenik.jpl.ui.core.PUIAction;
 import de.paulsenik.jpl.ui.core.PUIFrame;
+import de.paulsenik.pptkaraoke.utils.Language;
 import de.paulsenik.pptkaraoke.utils.Presentation;
 import de.paulsenik.pptkaraoke.utils.PresentationManager;
 import java.awt.Color;
@@ -102,6 +103,7 @@ public class UI extends PUIFrame {
         File f = folderChooser.getSelectedFile();
         Main.presentationManager = new PresentationManager(f.getAbsolutePath());
         updatePresentationList();
+        updateFilteredPresentationList();
       }
     });
 
@@ -220,6 +222,15 @@ public class UI extends PUIFrame {
       propertyDisplay.setEnabled(false);
     }
 
+    if (menu == 2) { // filter
+      filteredPresentationList.setEnabled(true);
+      {
+        filteredPresentationList.setBounds(20, 190, getWidth() / 3 - 30, h() - 210);
+      }
+    } else {
+      filteredPresentationList.setEnabled(false);
+    }
+
     if (menu == 1) { //play
       presentationDisplay.setEnabled(true);
       shuffleButton.setEnabled(true);
@@ -251,6 +262,19 @@ public class UI extends PUIFrame {
     updateElements();
   }
 
+  public void updateFilteredPresentationList() {
+    ArrayList<PUIElement> presentations = new ArrayList<>();
+    Main.presentationManager.filter(Main.filterYears,
+        Main.filterLanguages, Main.filterTags, Main.filterTopics).forEach(p -> {
+      PUIText t = new PUIText(this, p.name());
+      t.setBackgroundColor(PUIElement.getDefaultColor(2));
+      t.setTextColor(PUIElement.getDefaultColor(3));
+      presentations.add(t);
+    });
+    filteredPresentationList.clearElements();
+    filteredPresentationList.addAllElements(presentations);
+  }
+
   public void updatePropertyDisplay() {
     if (menu == 0) { // edit
       if (selectedPresentation == null) {
@@ -260,7 +284,7 @@ public class UI extends PUIFrame {
       ArrayList<PUIElement> displayables = new ArrayList<>();
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
         case "Year":
-          displayables.add(new PUIText(this, "" + selectedPresentation.year()));
+          displayables.add(new PUIText(this, selectedPresentation.year()));
           break;
         case "Lang":
           displayables.add(new PUIText(this, String.valueOf(selectedPresentation.language())));
@@ -289,10 +313,29 @@ public class UI extends PUIFrame {
       propertyDisplay.addAllElements(displayables);
 
     } else if (menu == 2) { // filter
+      ArrayList<PUIElement> displayables = new ArrayList<>();
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
         case "Year":
+          for (String s : Main.filterYears) {
+            PUIText yearText = new PUIText(this, s);
+            yearText.addActionListener(puiElement -> {
+              Main.filterYears.remove(s);
+              updatePropertyDisplay();
+              updateFilteredPresentationList();
+            });
+            displayables.add(yearText);
+          }
           break;
         case "Lang":
+          for (Language l : Main.filterLanguages) {
+            PUIText langText = new PUIText(this, l.toString());
+            langText.addActionListener(puiElement -> {
+              Main.filterLanguages.remove(Language.valueOf(((PUIText) puiElement).getText()));
+              updatePropertyDisplay();
+              updateFilteredPresentationList();
+            });
+            displayables.add(langText);
+          }
           break;
         case "Tag":
           break;
@@ -301,6 +344,8 @@ public class UI extends PUIFrame {
         default:
           throw new IllegalArgumentException("property not defined");
       }
+      propertyDisplay.clearElements();
+      propertyDisplay.addAllElements(displayables);
     }
   }
 
@@ -340,5 +385,10 @@ public class UI extends PUIFrame {
 
     menu = newMenu;
     updateElements();
+
+    // 1-time visual updates
+    if (newMenu == 0 || newMenu == 2) {
+      updatePropertyDisplay();
+    }
   }
 }

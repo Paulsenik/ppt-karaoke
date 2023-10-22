@@ -9,6 +9,7 @@ import de.paulsenik.pptkaraoke.utils.PresentationManager;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -17,12 +18,14 @@ public class Main {
 
   public static PresentationManager presentationManager;
 
-  public static Set<Integer> filterYears;
-  public static Set<Language> filterLanguages;
-  public static Set<String> filterTags;
-  public static Set<String> filterTopics;
+  public static Set<String> filterYears = new HashSet<>();
+  public static Set<Language> filterLanguages = new HashSet<>();
+  public static Set<String> filterTags = new HashSet<>();
+  public static Set<String> filterTopics = new HashSet<>();
 
   public static void main(String[] args) {
+    filterLanguages.add(Language.GERMAN);
+    filterYears.add("2023");
     UI ui = new UI();
   }
 

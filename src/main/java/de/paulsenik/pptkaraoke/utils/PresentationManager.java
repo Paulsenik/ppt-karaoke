@@ -108,23 +108,23 @@ public class PresentationManager {
     }
   }
 
-  public List<Presentation> filter(Set<Integer> years,
+  public List<Presentation> filter(Set<String> years,
       Set<Language> languages, Set<String> tags, Set<String> topics) {
 
     return presentations.values().stream().filter(p -> {
 
-      if (years != null && !years.contains(p.year())) {
+      if (years != null && !years.isEmpty() && !years.contains(p.year())) {
         return false;
       }
-      if (languages != null && !languages.contains(p.language())) {
-        return false;
-      }
-      // TODO toggle-able containsAll or contains any
-      if (tags != null && !p.tags().containsAll(tags)) {
+      if (languages != null && !languages.isEmpty() && !languages.contains(p.language())) {
         return false;
       }
       // TODO toggle-able containsAll or contains any
-      if (topics != null && !p.topics().containsAll(topics)) {
+      if (tags != null && !tags.isEmpty() && !p.tags().containsAll(tags)) {
+        return false;
+      }
+      // TODO toggle-able containsAll or contains any
+      if (topics != null && !topics.isEmpty() && !p.topics().containsAll(topics)) {
         return false;
       }
 

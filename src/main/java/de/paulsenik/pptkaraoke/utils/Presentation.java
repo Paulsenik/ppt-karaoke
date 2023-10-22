@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public record Presentation(
     String name,
     String folderLocation,
-    int year,
+    String year, //String is easier to read and work with
     Language language,
     List<String> tags,
     List<String> topics) {
@@ -28,7 +28,7 @@ public record Presentation(
         language, tags, topics);
   }
 
-  private static int getYear(String folderLocation) {
+  private static String getYear(String folderLocation) {
     int year;
     try {
       year = Integer.parseInt(PFolder.getName(folderLocation));
@@ -36,7 +36,7 @@ public record Presentation(
       year = Calendar.getInstance().getWeekYear();
     }
 
-    return year;
+    return String.valueOf(year);
   }
 
   public JSONObject getSerialized() {
