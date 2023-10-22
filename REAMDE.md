@@ -3,6 +3,8 @@
 Manager of lokal PowerPoint presentations, PDFs & ODPs. Randomly select files
 with tag-filter for a funny karaoke-night
 
+*Currently no support for nested folders in the presentation-structure*
+
 ## Presentation-Stucture
 
 - themes (multiple)

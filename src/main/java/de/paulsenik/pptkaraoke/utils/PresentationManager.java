@@ -21,7 +21,12 @@ public class PresentationManager {
   private String folderName;
 
   public PresentationManager(String presentationDir) {
-    this.presentationDir = presentationDir;
+    if (presentationDir == null || presentationDir.isBlank()) {
+      this.presentationDir = System.getProperty("user.dir");
+    } else {
+      this.presentationDir = new PFile(presentationDir).getAbsolutePath();
+    }
+    System.out.println(this.presentationDir);
     try {
       initPresentations();
     } catch (Exception e) {
@@ -41,7 +46,7 @@ public class PresentationManager {
     Presentation p = new Presentation("asdf", "adf", 234, test, test, Language.ENGLISH);
     Presentation p2 = new Presentation("fhatj", "2436afhze", 246, test, test, Language.ENGLISH);
 
-    PresentationManager m = new PresentationManager(".");
+    PresentationManager m = new PresentationManager("/home/paulsen/Documents/PPT/");
     m.presentations.add(p);
     m.presentations.add(p2);
     m.savePresentationInfo();
@@ -60,6 +65,7 @@ public class PresentationManager {
     for (String folderPath : subFolders) {
       for (String filePath : PFolder.getFiles(folderPath, null)) {
         // TODO
+        System.out.println(filePath);
       }
     }
   }
@@ -121,7 +127,6 @@ public class PresentationManager {
     PFile file = new PFile(presentationDir + PSystem.getFileSeparator() + PPT_SAVE_FILE);
     try {
       file.writeFile(storage.toString(2));
-      System.out.println(file.getAbsolutePath());
     } catch (Exception e) {
       e.printStackTrace();
       return false;

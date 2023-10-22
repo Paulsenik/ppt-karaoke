@@ -31,7 +31,7 @@ public record Presentation(
     int year;
     try {
       year = Integer.parseInt(PFolder.getName(folderLocation));
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException | NullPointerException e) {
       year = Calendar.getInstance().getWeekYear();
     }
 
