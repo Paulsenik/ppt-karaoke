@@ -18,7 +18,7 @@ public class UI extends PUIFrame {
   /**
    * 0 = Settings-Menu; 1 = Play-Menu; 2 = Filter-Menu
    */
-  private int menu = 1;
+  private int menu = 0;
   private int selectedProperty = 0;
   private Presentation selectedPresentation;
 
@@ -260,7 +260,10 @@ public class UI extends PUIFrame {
         case "Tag":
           for (String tag : selectedPresentation.tags()) {
             PUIText t = new PUIText(this, tag);
-            t.addActionListener(puiElement -> selectedPresentation.tags().remove(tag));
+            t.addActionListener(puiElement -> {
+              selectedPresentation.tags().remove(tag);
+              updatePropertyDisplay();
+            });
             displayables.add(t);
           }
           break;
