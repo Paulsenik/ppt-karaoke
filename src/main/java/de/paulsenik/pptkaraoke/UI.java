@@ -9,6 +9,7 @@ import de.paulsenik.pptkaraoke.utils.Presentation;
 import de.paulsenik.pptkaraoke.utils.PresentationManager;
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
@@ -18,11 +19,17 @@ public class UI extends PUIFrame {
    * 0 = Settings-Menu 1 = Play-Menu
    */
   private int menu = 0;
+
+  // MISC
+  private JFileChooser folderChooser;
+
   // Buttons
   private PUIElement menuSettingsButton;
   private PUIElement menuPlayButton;
   private PUIText folderButton;
-  private JFileChooser folderChooser;
+  private PUIText presentationDisplay;
+  private PUIText shuffleButton;
+  private PUIElement filterButton;
 
   // Lists
   private PUIList presentationList;
@@ -76,6 +83,32 @@ public class UI extends PUIFrame {
 
     presentationList = new PUIList(this);
 
+    presentationDisplay = new PUIText(this, "...");
+    presentationDisplay.setTextColor(Color.red);
+    presentationDisplay.setBackgroundColor(Color.white);
+    presentationDisplay.addActionListener(puiElement -> {
+      if (presentationDisplay.getMetadata() != null
+          && presentationDisplay.getMetadata() instanceof Presentation) {
+        try {
+          Main.open((Presentation) presentationDisplay.getMetadata());
+        } catch (IOException e) {
+          System.err.println("[UI] :: presentation could not be opened!");
+          e.printStackTrace();
+        }
+      }
+    });
+
+    shuffleButton = new PUIText(this, "GET");
+    shuffleButton.setTextColor(Color.orange);
+    shuffleButton.addActionListener(puiElement -> {
+      Presentation p = Main.getRandomPresentation();
+      if (p != null) {
+        presentationDisplay.setText(p.name());
+        presentationDisplay.setMetadata(p);
+        updateElements();
+      }
+    });
+
     for (PUIElement e : PUIElement.registeredElements) {
       e.doPaintOverOnHover(false);
       e.doPaintOverOnPress(false);
@@ -91,16 +124,29 @@ public class UI extends PUIFrame {
     if (menu == 0) { //settings
       folderButton.setEnabled(true);
       presentationList.setEnabled(true);
-      folderButton.setBounds(getWidth() * 2 / 3 + 5, 5, getWidth() / 3 - 10, 70);
-      presentationList.setBounds(getWidth() * 2 / 3, 80, getWidth() / 3, getHeight() - 80);
-      presentationList.setShowedElements(20);
+      {
+        folderButton.setBounds(getWidth() * 2 / 3 + 5, 5, getWidth() / 3 - 10, 70);
+        presentationList.setBounds(getWidth() * 2 / 3, 80, getWidth() / 3, getHeight() - 80);
+        presentationList.setShowedElements(20);
+      }
     } else {
       folderButton.setEnabled(false);
       presentationList.setEnabled(false);
     }
     if (menu == 1) { //play
+      presentationDisplay.setEnabled(true);
+      shuffleButton.setEnabled(true);
+      {
+        int textLength = Math.min(30, Math.max(presentationDisplay.getText().length() / 2, 10));
+        int textHeight = w() / textLength;
+        presentationDisplay.setBounds(10, (h() - textHeight) / 2, w() - 20, textHeight);
 
+        shuffleButton.setBounds((w() - 150) / 2, presentationDisplay.getY() + textHeight + 10, 150,
+            80);
+      }
     } else {
+      presentationDisplay.setEnabled(false);
+      shuffleButton.setEnabled(false);
 
     }
 
