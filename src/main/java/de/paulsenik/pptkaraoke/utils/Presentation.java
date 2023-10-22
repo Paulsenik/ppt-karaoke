@@ -11,20 +11,21 @@ public record Presentation(
     String name,
     String folderLocation,
     int year,
+    Language language,
     List<String> tags,
-    List<String> topics, Language language) {
+    List<String> topics) {
 
 
   public Presentation(String fileLocation) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation),
-        getYear(PFile.getParentFolder(fileLocation)), new ArrayList<>(), new ArrayList<>(),
-        Language.ENGLISH);
+        getYear(PFile.getParentFolder(fileLocation)),
+        Language.UNDEFINED, new ArrayList<>(), new ArrayList<>());
   }
 
-  public Presentation(String fileLocation, List<String> tags, List<String> topics,
-      Language language) {
+  public Presentation(String fileLocation,
+      Language language, List<String> tags, List<String> topics) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation), getYear(fileLocation),
-        tags, topics, language);
+        language, tags, topics);
   }
 
   private static int getYear(String folderLocation) {

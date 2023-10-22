@@ -6,8 +6,10 @@ import de.paulsenik.jpl.utils.PSystem;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,15 +41,18 @@ public class PresentationManager {
 
   public static void main(String[] args) throws InterruptedException {
     PresentationManager m = new PresentationManager("/home/paulsen/Documents/PPT/");
-
-//    try {
-//      Main.open(new Presentation("/home/paulsen/Documents/PPT/karaoke.json"));
-//    } catch (IOException e) {
-//      throw new RuntimeException(e);
-//    }
+    List<String> l = new ArrayList<>();
+    l.add("a123  ");
+    l.add("a 234 ");
+    l.add("a  345");
+    m.presentations.add(new Presentation("test", "_", 2020, Language.GERMAN, l, l));
 
     m.savePresentationInfo();
-    Thread.sleep(1000);
+    Set<String> tags = new HashSet<>();
+    tags.add("a 234 ");
+    tags.add("a  345");
+    List<Presentation> p = m.filter(null, null, tags, tags);
+    System.out.println(p.toString());
   }
 
   private void initPresentations() {
@@ -72,14 +77,36 @@ public class PresentationManager {
         } else {
           List<String> tags = new ArrayList<>();
           List<String> topics = new ArrayList<>();
-          Language language = Language.ENGLISH;
+          Language language = Language.UNDEFINED;
 
-          p = new Presentation(filePath, tags, topics, language);
+          p = new Presentation(filePath, language, tags, topics);
           System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
         }
         presentations.add(p);
       }
     }
+  }
+
+  public List<Presentation> filter(Set<Integer> years,
+      Set<Language> languages, Set<String> tags, Set<String> topics) {
+
+    return presentations.stream().filter(p -> {
+
+      if (years != null && !years.contains(p.year())) {
+        return false;
+      }
+      if (languages != null && !languages.contains(p.language())) {
+        return false;
+      }
+      if (tags != null && !p.tags().containsAll(tags)) {
+        return false;
+      }
+      if (topics != null && !p.topics().containsAll(topics)) {
+        return false;
+      }
+
+      return true;
+    }).toList();
   }
 
   private Map<String, JSONObject> getPresentationInfo(JSONArray data) {
