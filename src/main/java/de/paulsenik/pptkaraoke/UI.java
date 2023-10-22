@@ -19,6 +19,7 @@ public class UI extends PUIFrame {
    * 0 = Settings-Menu; 1 = Play-Menu; 2 = Filter-Menu
    */
   private int menu = 1;
+  private int selectedProperty = 0;
 
   // MISC
   private JFileChooser folderChooser;
@@ -30,14 +31,11 @@ public class UI extends PUIFrame {
   private PUIText presentationDisplay;
   private PUIText shuffleButton;
   private PUIElement filterButton;
-  // // Properties
-  private PUIText yearButton;
-  private PUIText languageButton;
-  private PUIText tagButton;
-  private PUIText topicButton;
 
   // Lists
   private PUIList presentationList;
+  private PUIList properties;
+  private PUIList propertyDisplay;
 
   public UI() {
     initElements();
@@ -87,6 +85,8 @@ public class UI extends PUIFrame {
     });
 
     presentationList = new PUIList(this);
+    presentationList.setShowedElements(20);
+    presentationList.setSliderWidth(10);
 
     presentationDisplay = new PUIText(this, "...");
     presentationDisplay.setTextColor(Color.red);
@@ -127,6 +127,47 @@ public class UI extends PUIFrame {
       changeMenu(3);
     });
 
+    // Properties
+    PUIAction propertyChange = puiElement -> {
+      switch (((PUIText) puiElement).getText()) {
+        case "Year":
+          selectProperty(0);
+          break;
+        case "Lang":
+          selectProperty(1);
+          break;
+        case "Tag":
+          selectProperty(2);
+          break;
+        case "Topic":
+          selectProperty(3);
+          break;
+        default:
+          throw new IllegalArgumentException("property not defined");
+      }
+    };
+
+    properties = new PUIList(this);
+    properties.setShowedElements(10);
+    properties.setSliderWidth(10);
+
+    PUIText yearButton = new PUIText(this, "Year");
+    PUIText languageButton = new PUIText(this, "Lang");
+    PUIText tagButton = new PUIText(this, "Tag");
+    PUIText topicButton = new PUIText(this, "Topic");
+    yearButton.addActionListener(propertyChange);
+    languageButton.addActionListener(propertyChange);
+    tagButton.addActionListener(propertyChange);
+    topicButton.addActionListener(propertyChange);
+    properties.addElement(yearButton);
+    properties.addElement(languageButton);
+    properties.addElement(tagButton);
+    properties.addElement(topicButton);
+
+    propertyDisplay = new PUIList(this);
+    properties.setShowedElements(10);
+    properties.setSliderWidth(10);
+
     for (PUIElement e : PUIElement.registeredElements) {
       e.doPaintOverOnHover(false);
       e.doPaintOverOnPress(false);
@@ -145,7 +186,6 @@ public class UI extends PUIFrame {
       {
         folderButton.setBounds(getWidth() * 2 / 3 + 5, 5, getWidth() / 3 - 10, 70);
         presentationList.setBounds(getWidth() * 2 / 3, 80, getWidth() / 3, getHeight() - 80);
-        presentationList.setShowedElements(20);
       }
     } else {
       folderButton.setEnabled(false);
@@ -171,6 +211,15 @@ public class UI extends PUIFrame {
       filterButton.setEnabled(false);
     }
 
+    if (menu == 0 || menu == 2) {
+      properties.setEnabled(true);
+      {
+        properties.setBounds(10, 100, w() / 3 - 20, h() - 120);
+      }
+    } else {
+      properties.setEnabled(false);
+    }
+
     if (menu == 2) {
 
     } else {
@@ -180,6 +229,14 @@ public class UI extends PUIFrame {
     if (menu > 2) {
       throw new IllegalArgumentException("wrong menu-id");
     }
+  }
+
+  private void selectProperty(int property) {
+    ArrayList<PUIElement> elements = properties.getElements();
+    elements.get(selectedProperty).setBackgroundColor(PUIElement.getDefaultColor(0));
+    elements.get(property).setBackgroundColor(Color.gray);
+    this.selectedProperty = property;
+    updateElements();
   }
 
   public void updatePresentationList() {
