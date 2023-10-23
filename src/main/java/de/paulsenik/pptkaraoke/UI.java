@@ -414,7 +414,30 @@ public class UI extends PUIFrame {
           // TODO
         }
         case "Tag" -> {
+          ArrayList<String> userSelection = new ArrayList<>();
+          userSelection.add("");
+          userSelection.addAll(Main.presentationManager.allTags);
+          int tagIndex = getUserSelection("Select a new Tag", userSelection);
 
+          if (tagIndex < 0) { // invalid
+            System.out.println("invalid tagindex when selecting Tag!");
+          } else if (tagIndex == 0) { // new
+
+            String newTag = getUserInput("Create a new Tag", "tag");
+            if (newTag == null || newTag.isBlank() || Main.presentationManager.allTags.contains(
+                newTag)) {
+              System.err.println("[UI] :: Invalid Tag : " + newTag);
+            } else {
+              Main.presentationManager.allTags.add(newTag);
+              selectedPresentation.tags().add(newTag);
+              updatePropertyDisplay();
+              updateFilteredPresentationList();
+            }
+          } else { // existing
+            selectedPresentation.tags().add(userSelection.get(tagIndex));
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          }
         }
         case "Topic" -> {
         }
