@@ -257,7 +257,8 @@ public class UI extends PUIFrame {
         int textLength = Math.min(30, Math.max(presentationDisplay.getText().length() / 2, 10));
         int textHeight = w() / textLength;
         presentationDisplay.setBounds(10, (h() - textHeight) / 2, w() - 20, textHeight);
-        shuffleButton.setBounds((w() - 150) / 2, presentationDisplay.getY() + textHeight + 10, 150,
+        shuffleButton.setBounds((w() - 150) / 2,
+            Math.max(presentationDisplay.getY() + textHeight + 10, h() / 4 * 3 - 40), 150,
             80);
       }
     } else {
