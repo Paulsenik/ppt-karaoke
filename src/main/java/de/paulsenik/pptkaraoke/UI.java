@@ -5,6 +5,7 @@ import de.paulsenik.jpl.ui.PUIList;
 import de.paulsenik.jpl.ui.PUIText;
 import de.paulsenik.jpl.ui.core.PUIAction;
 import de.paulsenik.jpl.ui.core.PUIFrame;
+import de.paulsenik.jpl.utils.PSystem;
 import de.paulsenik.pptkaraoke.utils.Language;
 import de.paulsenik.pptkaraoke.utils.Presentation;
 import de.paulsenik.pptkaraoke.utils.PresentationManager;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 public class UI extends PUIFrame {
+
+  public static final String frameTitle = "PowerPoint-Karaoke - Presentation Manager";
 
   /**
    * 0 = Settings-Menu; 1 = Play-Menu; 2 = Filter-Menu
@@ -35,6 +38,7 @@ public class UI extends PUIFrame {
   private PUIText shuffleButton;
   private PUIElement menuFilterButton;
   private PUIText addPropertyButton;
+  private PUIText saveButton;
 
   // Lists
   private PUIList presentationList;
@@ -42,9 +46,8 @@ public class UI extends PUIFrame {
   private PUIList properties;
   private PUIList propertyDisplay;
 
-
   public UI() {
-    super();
+    super(frameTitle, 1000, 700);
     PUIElement.setDefaultColor(1, Color.WHITE);
     PUIElement.setDefaultColor(10, new Color(219, 130, 36));
     initElements();
@@ -106,6 +109,7 @@ public class UI extends PUIFrame {
       } else {
         File f = folderChooser.getSelectedFile();
         Main.presentationManager = new PresentationManager(f.getAbsolutePath());
+        folderButton.setText(PSystem.getFileSeparator() + f.getName());
         updatePresentationList();
         updateFilteredPresentationList();
       }
@@ -126,7 +130,9 @@ public class UI extends PUIFrame {
       if (presentationDisplay.getMetadata() != null
           && presentationDisplay.getMetadata() instanceof Presentation) {
         try {
-          Main.open((Presentation) presentationDisplay.getMetadata());
+          Presentation p = (Presentation) presentationDisplay.getMetadata();
+          Main.open(p);
+          setTitle(frameTitle + " :: " + p.name());
         } catch (IOException e) {
           System.err.println("[UI] :: presentation could not be opened!");
           e.printStackTrace();
