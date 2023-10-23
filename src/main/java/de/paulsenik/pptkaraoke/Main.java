@@ -65,6 +65,7 @@ public class Main {
     }
     List<Presentation> presentations = presentationManager.filter(filterYears, filterLanguages,
         filterTags, filterTopics);
-    return presentations.get(new Random().nextInt(presentations.size()));
+    return presentations.isEmpty() ? null
+        : presentations.get(new Random().nextInt(presentations.size()));
   }
 }
