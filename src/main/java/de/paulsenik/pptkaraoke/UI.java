@@ -33,6 +33,7 @@ public class UI extends PUIFrame {
   private PUIText presentationDisplay;
   private PUIText shuffleButton;
   private PUIElement menuFilterButton;
+  private PUIText addPropertyButton;
 
   // Lists
   private PUIList presentationList;
@@ -182,6 +183,12 @@ public class UI extends PUIFrame {
     propertyDisplay = new PUIList(this);
     propertyDisplay.setShowedElements(10);
     propertyDisplay.setSliderWidth(10);
+
+    addPropertyButton = new PUIText(this, "+");
+    addPropertyButton.setBackgroundColor(new Color(199, 186, 39));
+    addPropertyButton.addActionListener(puiElement -> {
+      
+    });
 
     for (PUIElement e : PUIElement.registeredElements) {
       e.doPaintOverOnHover(false);
