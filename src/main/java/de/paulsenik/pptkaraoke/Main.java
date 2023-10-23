@@ -24,8 +24,6 @@ public class Main {
   public static Set<String> filterTopics = new HashSet<>();
 
   public static void main(String[] args) {
-    filterLanguages.add(Language.GERMAN);
-    filterYears.add("2023");
     UI ui = new UI();
   }
 

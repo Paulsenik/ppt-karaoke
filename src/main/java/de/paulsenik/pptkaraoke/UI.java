@@ -190,7 +190,7 @@ public class UI extends PUIFrame {
     addPropertyButton = new PUIText(this, "+");
     addPropertyButton.setBackgroundColor(new Color(199, 186, 39));
     addPropertyButton.addActionListener(puiElement -> {
-
+      addProperty();
     });
 
     for (PUIElement e : PUIElement.registeredElements) {
@@ -217,7 +217,7 @@ public class UI extends PUIFrame {
     if (menu == 0) { //settings
       presentationList.setEnabled(true);
       {
-        presentationList.setBounds(20, 190, getWidth() / 3 - 30, h() - 210);
+        presentationList.setBounds(20, 190, w() / 3 - 30, h() - 210);
       }
     } else {
       presentationList.setEnabled(false);
@@ -227,21 +227,24 @@ public class UI extends PUIFrame {
       folderButton.setEnabled(true);
       properties.setEnabled(true);
       propertyDisplay.setEnabled(true);
+      addPropertyButton.setEnabled(true);
       {
-        folderButton.setBounds(20, 100, getWidth() / 3 - 30, 90);
+        folderButton.setBounds(20, 100, w() / 3 - 30, 90);
         properties.setBounds(w() / 3 + 10, 190, w() / 3 - 20, h() - 210);
         propertyDisplay.setBounds(w() / 3 * 2 + 10, 190, w() / 3 - 30, h() - 210);
+        addPropertyButton.setBounds(w() / 3 * 2 + 10, 100, w() / 3 - 30, 90);
       }
     } else {
       folderButton.setEnabled(false);
       properties.setEnabled(false);
       propertyDisplay.setEnabled(false);
+      addPropertyButton.setEnabled(false);
     }
 
     if (menu == 1) { // filter
       filteredPresentationList.setEnabled(true);
       {
-        filteredPresentationList.setBounds(20, 190, getWidth() / 3 - 30, h() - 210);
+        filteredPresentationList.setBounds(20, 190, w() / 3 - 30, h() - 210);
       }
     } else {
       filteredPresentationList.setEnabled(false);
@@ -354,14 +357,58 @@ public class UI extends PUIFrame {
           }
           break;
         case "Tag":
+          // TODO
           break;
         case "Topic":
+          // TODO
           break;
         default:
           throw new IllegalArgumentException("property not defined");
       }
       propertyDisplay.clearElements();
       propertyDisplay.addAllElements(displayables);
+    }
+  }
+
+  public void addProperty() {
+    if (menu == 0) { // edit-mode
+      // TODO
+    } else if (menu == 1) { // filter-mode
+      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+        case "Year": {
+          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allYears);
+
+          if (!Main.presentationManager.allYears.isEmpty()) {
+            int selected = getUserSelection("Years", values);
+            if (selected >= 0) {
+              Main.filterYears.add(values.get(selected));
+            }
+          }
+        }
+        break;
+        case "Lang": {
+          ArrayList<String> values = new ArrayList<>();
+          Main.presentationManager.allLanguages.forEach(l -> values.add(l.name()));
+
+          if (!values.isEmpty()) {
+            int selected = getUserSelection("Languages", values);
+
+            if (selected >= 0) {
+              Main.filterLanguages.add(Language.valueOf(values.get(selected)));
+            }
+          }
+        }
+        break;
+        case "Tag":
+          break;
+        case "Topic":
+          break;
+        default:
+          throw new IllegalArgumentException("property not defined");
+      }
+      updatePropertyDisplay();
+    } else {
+      System.err.println("Properties can only be added in edit- and filter-mode!");
     }
   }
 
@@ -393,7 +440,7 @@ public class UI extends PUIFrame {
     }
 
     // conditions
-    if (newMenu == 2) {
+    if (newMenu == 1 || newMenu == 2) {
       if (Main.presentationManager == null) {
         return;
       }

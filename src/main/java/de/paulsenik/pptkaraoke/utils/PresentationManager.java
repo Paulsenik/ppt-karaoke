@@ -20,6 +20,11 @@ public class PresentationManager {
   public static Set<String> presentationTypes = new HashSet<>();
   public final Map<String, Presentation> presentations = new HashMap<>();
 
+  public final Set<String> allYears = new HashSet<>();
+  public final Set<Language> allLanguages = new HashSet<>();
+  public final Set<String> allTags = new HashSet<>();
+  public final Set<String> allTopics = new HashSet<>();
+
   private String presentationDir;
   private String folderName;
 
@@ -103,6 +108,13 @@ public class PresentationManager {
           p = new Presentation(filePath, language, tags, topics);
           System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
         }
+
+        // property-index
+        allYears.add(p.year());
+        allLanguages.add(p.language());
+        allTags.addAll(p.tags());
+        allTopics.addAll(p.topics());
+
         presentations.put(p.name(), p);
       }
     }
