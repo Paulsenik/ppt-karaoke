@@ -4,7 +4,6 @@ import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
 import de.paulsenik.jpl.utils.PSystem;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +86,7 @@ public class PresentationManager {
             e.printStackTrace();
           }
 
-          List<String> tags = new ArrayList<>();
+          Set<String> tags = new HashSet<>();
           try {
             for (Object obj : jsonObj.getJSONArray("tags")) {
               tags.add((String) obj);
@@ -96,7 +95,7 @@ public class PresentationManager {
             e.printStackTrace();
           }
 
-          List<String> topics = new ArrayList<>();
+          Set<String> topics = new HashSet<>();
           try {
             for (Object obj : jsonObj.getJSONArray("topics")) {
               topics.add((String) obj);

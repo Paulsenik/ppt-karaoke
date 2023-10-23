@@ -5,7 +5,12 @@ with tag-filter for a funny karaoke-night
 
 *Currently no support for nested folders in the presentation-structure*
 
-TODO: LANGUAGE-support
+**TODO**:
+
+- LANGUAGE-support
+- code-cleanup
+- Separate Constants-class
+- restructure
 
 ## Presentation-Stucture
 

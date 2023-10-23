@@ -2,9 +2,9 @@ package de.paulsenik.pptkaraoke.utils;
 
 import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.json.JSONObject;
 
 public record Presentation(
@@ -12,18 +12,18 @@ public record Presentation(
     String folderLocation,
     String year, //String is easier to read and work with
     Language language,
-    List<String> tags,
-    List<String> topics) {
+    Set<String> tags,
+    Set<String> topics) {
 
 
   public Presentation(String fileLocation) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation),
         getYear(PFile.getParentFolder(fileLocation)),
-        Language.UNDEFINED, new ArrayList<>(), new ArrayList<>());
+        Language.UNDEFINED, new HashSet<>(), new HashSet<>());
   }
 
   public Presentation(String fileLocation,
-      Language language, List<String> tags, List<String> topics) {
+      Language language, Set<String> tags, Set<String> topics) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation), getYear(fileLocation),
         language, tags, topics);
   }

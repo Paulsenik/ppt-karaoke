@@ -405,10 +405,25 @@ public class UI extends PUIFrame {
 
   public void addProperty() {
     if (menu == 0) { // edit-mode
-      // TODO
+
+      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+        case "Year" -> {
+          // not editable in editor (move file into folder)
+        }
+        case "Language" -> {
+          // TODO
+        }
+        case "Tag" -> {
+
+        }
+        case "Topic" -> {
+        }
+        default -> throw new IllegalArgumentException("property not defined");
+      }
+
     } else if (menu == 1) { // filter-mode
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
-        case "Year": {
+        case "Year" -> {
           ArrayList<String> values = new ArrayList<>(Main.presentationManager.allYears);
 
           if (!Main.presentationManager.allYears.isEmpty()) {
@@ -418,8 +433,7 @@ public class UI extends PUIFrame {
             }
           }
         }
-        break;
-        case "Language": {
+        case "Language" -> {
           ArrayList<String> values = new ArrayList<>();
           Main.presentationManager.allLanguages.forEach(l -> values.add(l.name()));
 
@@ -431,8 +445,7 @@ public class UI extends PUIFrame {
             }
           }
         }
-        break;
-        case "Tag": {
+        case "Tag" -> {
           ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTags);
 
           if (!Main.presentationManager.allTags.isEmpty()) {
@@ -442,8 +455,7 @@ public class UI extends PUIFrame {
             }
           }
         }
-        break;
-        case "Topic": {
+        case "Topic" -> {
           ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTopics);
 
           if (!Main.presentationManager.allTopics.isEmpty()) {
@@ -453,9 +465,7 @@ public class UI extends PUIFrame {
             }
           }
         }
-        break;
-        default:
-          throw new IllegalArgumentException("property not defined");
+        default -> throw new IllegalArgumentException("property not defined");
       }
       updatePropertyDisplay();
       updateFilteredPresentationList();
