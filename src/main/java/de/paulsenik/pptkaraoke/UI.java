@@ -38,7 +38,7 @@ public class UI extends PUIFrame {
   private PUIText shuffleButton;
   private PUIElement menuFilterButton;
   private PUIText addPropertyButton;
-  private PUIText saveButton;
+  private PUIElement saveButton;
 
   // Lists
   private PUIList presentationList;
@@ -199,6 +199,13 @@ public class UI extends PUIFrame {
       addProperty();
     });
 
+    saveButton = new PUIText(this, "*");
+    saveButton.addActionListener(puiElement -> {
+      if (Main.presentationManager != null) {
+        Main.presentationManager.savePresentationInfo();
+      }
+    });
+
     for (PUIElement e : PUIElement.registeredElements) {
       e.doPaintOverOnHover(false);
       e.doPaintOverOnPress(false);
@@ -222,11 +229,14 @@ public class UI extends PUIFrame {
 
     if (menu == 0) { //settings
       presentationList.setEnabled(true);
+      saveButton.setEnabled(true);
       {
         presentationList.setBounds(20, 190, w() / 3 - 30, h() - 210);
+        saveButton.setBounds(w() - 80, 0, 80, 80);
       }
     } else {
       presentationList.setEnabled(false);
+      saveButton.setEnabled(false);
     }
 
     if (menu == 0 || menu == 1) {

@@ -191,7 +191,8 @@ public class PresentationManager {
    *
    * @return true if successful
    */
-  private boolean savePresentationInfo() {
+  public boolean savePresentationInfo() {
+    System.out.println("[PresentationManager] :: saving PresentationInfo");
     JSONArray storage = new JSONArray();
 
     for (Presentation p : presentations.values()) {
