@@ -22,6 +22,7 @@ public class UI extends PUIFrame {
   private int menu = 0;
   private int selectedProperty = 0;
   private Presentation selectedPresentation;
+  private boolean initElements = false;
 
   // MISC
   private JFileChooser folderChooser;
@@ -41,7 +42,9 @@ public class UI extends PUIFrame {
   private PUIList properties;
   private PUIList propertyDisplay;
 
+
   public UI() {
+    super();
     PUIElement.setDefaultColor(1, Color.WHITE);
     PUIElement.setDefaultColor(10, new Color(219, 130, 36));
     initElements();
@@ -187,7 +190,7 @@ public class UI extends PUIFrame {
     addPropertyButton = new PUIText(this, "+");
     addPropertyButton.setBackgroundColor(new Color(199, 186, 39));
     addPropertyButton.addActionListener(puiElement -> {
-      
+
     });
 
     for (PUIElement e : PUIElement.registeredElements) {
@@ -199,11 +202,17 @@ public class UI extends PUIFrame {
     menuSettingsButton.setBounds(0, 0, 80, 80);
     menuFilterButton.setBounds(80, 0, 80, 80);
     menuPlayButton.setBounds(160, 0, 80, 80);
+
+    initElements = true;
   }
 
   @Override
   public void updateElements() {
     super.updateElements();
+
+    if (!hasInit() || !initElements) {
+      return;
+    }
 
     if (menu == 0) { //settings
       presentationList.setEnabled(true);
