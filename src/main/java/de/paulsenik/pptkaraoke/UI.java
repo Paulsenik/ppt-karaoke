@@ -158,7 +158,7 @@ public class UI extends PUIFrame {
         case "Year":
           selectProperty(0);
           break;
-        case "Lang":
+        case "Language":
           selectProperty(1);
           break;
         case "Tag":
@@ -177,7 +177,7 @@ public class UI extends PUIFrame {
     properties.setSliderWidth(10);
 
     PUIText yearButton = new PUIText(this, "Year");
-    PUIText languageButton = new PUIText(this, "Lang");
+    PUIText languageButton = new PUIText(this, "Language");
     PUIText tagButton = new PUIText(this, "Tag");
     PUIText topicButton = new PUIText(this, "Topic");
     yearButton.addActionListener(propertyChange);
@@ -322,7 +322,7 @@ public class UI extends PUIFrame {
         case "Year":
           displayables.add(new PUIText(this, selectedPresentation.year()));
           break;
-        case "Lang":
+        case "Language":
           displayables.add(new PUIText(this, String.valueOf(selectedPresentation.language())));
           break;
         case "Tag":
@@ -362,7 +362,7 @@ public class UI extends PUIFrame {
             displayables.add(yearText);
           }
           break;
-        case "Lang":
+        case "Language":
           for (Language l : Main.filterLanguages) {
             PUIText langText = new PUIText(this, l.toString());
             langText.addActionListener(puiElement -> {
@@ -374,10 +374,26 @@ public class UI extends PUIFrame {
           }
           break;
         case "Tag":
-          // TODO
+          for (String s : Main.filterTags) {
+            PUIText text = new PUIText(this, s);
+            text.addActionListener(puiElement -> {
+              Main.filterTags.remove(s);
+              updatePropertyDisplay();
+              updateFilteredPresentationList();
+            });
+            displayables.add(text);
+          }
           break;
         case "Topic":
-          // TODO
+          for (String s : Main.filterTopics) {
+            PUIText text = new PUIText(this, s);
+            text.addActionListener(puiElement -> {
+              Main.filterTopics.remove(s);
+              updatePropertyDisplay();
+              updateFilteredPresentationList();
+            });
+            displayables.add(text);
+          }
           break;
         default:
           throw new IllegalArgumentException("property not defined");
@@ -403,7 +419,7 @@ public class UI extends PUIFrame {
           }
         }
         break;
-        case "Lang": {
+        case "Language": {
           ArrayList<String> values = new ArrayList<>();
           Main.presentationManager.allLanguages.forEach(l -> values.add(l.name()));
 
@@ -416,14 +432,33 @@ public class UI extends PUIFrame {
           }
         }
         break;
-        case "Tag":
-          break;
-        case "Topic":
-          break;
+        case "Tag": {
+          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTags);
+
+          if (!Main.presentationManager.allTags.isEmpty()) {
+            int selected = getUserSelection("Tags", values);
+            if (selected >= 0) {
+              Main.filterTags.add(values.get(selected));
+            }
+          }
+        }
+        break;
+        case "Topic": {
+          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTopics);
+
+          if (!Main.presentationManager.allTopics.isEmpty()) {
+            int selected = getUserSelection("Topics", values);
+            if (selected >= 0) {
+              Main.filterTopics.add(values.get(selected));
+            }
+          }
+        }
+        break;
         default:
           throw new IllegalArgumentException("property not defined");
       }
       updatePropertyDisplay();
+      updateFilteredPresentationList();
     } else {
       System.err.println("Properties can only be added in edit- and filter-mode!");
     }
