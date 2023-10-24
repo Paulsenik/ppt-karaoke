@@ -61,40 +61,50 @@ public class UI extends PUIFrame {
     menuSettingsButton = new PUIElement(this);
     menuSettingsButton.addActionListener(puiElement -> changeMenu(0));
     menuSettingsButton.setDraw((g, x, y, w, h) -> {
+      int space = w / 5;
       if (menu == 0) {
+        g.setColor(Color.GRAY);
+        g.fillRoundRect(x + space / 2, y + space / 2, w - space, h - space, h / 8, h / 8);
         g.setColor(Color.WHITE);
       } else {
-        g.setColor(Color.gray);
+        g.setColor(Color.GRAY);
       }
-      g.fillRect(x + 5, y + 5, w - 10, h / 6);
-      g.fillRect(x + 5, y + 5 + 2 * h / 6, w - 10, h / 6);
-      g.fillRect(x + 5, y + 5 + 4 * h / 6, w - 10, h / 6);
+      int gHeigt = (h - space * 2) / 5;
+      g.fillRect(x + space, y + space, w - space * 2, gHeigt);
+      g.fillRect(x + space, y + space + gHeigt * 2, w - space * 2, gHeigt);
+      g.fillRect(x + space, y + space + gHeigt * 4, w - space * 2, gHeigt);
     });
 
     menuPlayButton = new PUIElement(this);
     menuPlayButton.addActionListener(puiElement -> changeMenu(2));
     menuPlayButton.setDraw((g, x, y, w, h) -> {
+      int space = w / 5;
       if (menu == 2) {
+        g.setColor(Color.GRAY);
+        g.fillRoundRect(x + space / 2, y + space / 2, w - space, h - space, h / 8, h / 8);
         g.setColor(Color.WHITE);
       } else {
         g.setColor(Color.gray);
       }
-      int[] X = {x + 5, x + 5, x + w - 5};
-      int[] Y = {y + 5, y + h - 5, y + h / 2};
+      int[] X = {x + space, x + space, x + w - space};
+      int[] Y = {y + space, y + h - space, y + h / 2};
       g.fillPolygon(X, Y, 3);
     });
 
     menuFilterButton = new PUIElement(this);
     menuFilterButton.setDraw((g, x, y, w, h) -> {
+      int space = w / 5;
       if (menu == 1) {
+        g.setColor(Color.GRAY);
+        g.fillRoundRect(x + space / 2, y + space / 2, w - space, h - space, h / 8, h / 8);
         g.setColor(Color.WHITE);
       } else {
         g.setColor(Color.gray);
       }
-      int[] X = {x + 5, x + w - 10, x + w / 2};
-      int[] Y = {y + 5, y + 5, y + h / 3 * 2};
+      int[] X = {x + space, x + w - space, x + w / 2};
+      int[] Y = {y + space, y + space, y + h / 7 * 4};
       g.fillPolygon(X, Y, 3);
-      g.fillRect(x + w / 5 * 2, y + 5, w / 5, h - 10);
+      g.fillRect(x + w / 2 - w / 14, y + space, w / 7, h - space * 2);
     });
     menuFilterButton.addActionListener(puiElement -> {
       changeMenu(1);
@@ -201,12 +211,12 @@ public class UI extends PUIFrame {
       addProperty();
     });
 
-    saveButton = new PUIText(this, "S");
+    saveButton = new PUIText(this, "Save");
     saveButton.addActionListener(puiElement -> {
       if (Main.presentationManager != null) {
-        ((PUIText) saveButton).setText("#");
+        ((PUIText) saveButton).setText("ooo");
         Main.presentationManager.savePresentationInfo();
-        ((PUIText) saveButton).setText("S");
+        ((PUIText) saveButton).setText("Save");
       }
     });
 
@@ -236,7 +246,7 @@ public class UI extends PUIFrame {
       saveButton.setEnabled(true);
       {
         presentationList.setBounds(20, 190, w() / 3 - 30, h() - 210);
-        saveButton.setBounds(w() - 80, 0, 80, 80);
+        saveButton.setBounds(w() - 160, 0, 160, 80);
       }
     } else {
       presentationList.setEnabled(false);
@@ -564,6 +574,7 @@ public class UI extends PUIFrame {
     // conditions
     if (newMenu == 1 || newMenu == 2) {
       if (Main.presentationManager == null) {
+        sendUserInfo("You need to select a Folder!");
         return;
       }
     }
