@@ -4,6 +4,7 @@ import de.paulsenik.jpl.ui.PUIElement;
 import de.paulsenik.jpl.ui.PUIList;
 import de.paulsenik.jpl.ui.PUIText;
 import de.paulsenik.jpl.ui.core.PUIAction;
+import de.paulsenik.jpl.ui.core.PUICanvas;
 import de.paulsenik.jpl.ui.core.PUIFrame;
 import de.paulsenik.jpl.utils.PSystem;
 import de.paulsenik.pptkaraoke.utils.Language;
@@ -50,7 +51,7 @@ public class UI extends PUIFrame {
   public UI() {
     super(frameTitle, 1000, 700);
     PUIElement.setDefaultColor(1, Color.WHITE);
-    PUIElement.setDefaultColor(10, new Color(219, 130, 36));
+    PUIElement.setDefaultColor(10, new Color(47, 124, 154));
     initElements();
     folderChooser = new JFileChooser();
     folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -58,6 +59,12 @@ public class UI extends PUIFrame {
   }
 
   private void initElements() {
+
+    new PUICanvas(this, (g, x, y, w, h) -> {
+      g.setColor(new Color(255, 255, 255, 10));
+      g.fillRect(0, 0, w, 80);
+    });
+
     menuSettingsButton = new PUIElement(this);
     menuSettingsButton.addActionListener(puiElement -> changeMenu(0));
     menuSettingsButton.setDraw((g, x, y, w, h) -> {
@@ -111,7 +118,7 @@ public class UI extends PUIFrame {
     });
 
     folderButton = new PUIText(this, "Folder");
-    folderButton.setBackgroundColor(new Color(199, 186, 39));
+    folderButton.setBackgroundColor(PUIElement.getDefaultColor(10));
     folderButton.addActionListener(puiElement -> {
       int returnVal = folderChooser.showOpenDialog(this);
 
@@ -136,8 +143,8 @@ public class UI extends PUIFrame {
     filteredPresentationList.setSliderWidth(10);
 
     presentationDisplay = new PUIText(this, "...");
-    presentationDisplay.setTextColor(Color.red);
-    presentationDisplay.setBackgroundColor(new Color(0, 0, 0, 0));
+    presentationDisplay.setTextColor(PUIElement.getDefaultColor(10));
+    presentationDisplay.setDraw(null);
     presentationDisplay.addActionListener(puiElement -> {
       if (presentationDisplay.getMetadata() != null
           && presentationDisplay.getMetadata() instanceof Presentation) {
@@ -206,12 +213,14 @@ public class UI extends PUIFrame {
     propertyDisplay.setSliderWidth(10);
 
     addPropertyButton = new PUIText(this, "+");
-    addPropertyButton.setBackgroundColor(new Color(199, 186, 39));
+    addPropertyButton.setBackgroundColor(PUIElement.getDefaultColor(10));
     addPropertyButton.addActionListener(puiElement -> {
       addProperty();
     });
 
     saveButton = new PUIText(this, "Save");
+    saveButton.setDraw(null);
+    saveButton.setTextColor(PUIElement.getDefaultColor(10));
     saveButton.addActionListener(puiElement -> {
       if (Main.presentationManager != null) {
         ((PUIText) saveButton).setText("ooo");
