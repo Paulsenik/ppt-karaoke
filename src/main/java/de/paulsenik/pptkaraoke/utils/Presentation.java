@@ -7,13 +7,26 @@ import java.util.HashSet;
 import java.util.Set;
 import org.json.JSONObject;
 
-public record Presentation(
-    String name,
-    String folderLocation,
-    String year, //String is easier to read and work with
-    Language language,
-    Set<String> tags,
-    Set<String> topics) {
+public class Presentation {
+
+
+  protected String name;
+  protected String folderLocation;
+  protected String year; //String is easier to read and work with
+  protected Language language;
+  Set<String> tags;
+  Set<String> topics;
+
+  public Presentation(String name, String folderLocation, String year, Language language,
+      Set<String> tags,
+      Set<String> topics) {
+    this.name = name;
+    this.folderLocation = folderLocation;
+    this.year = year;
+    this.language = language;
+    this.tags = tags;
+    this.topics = topics;
+  }
 
 
   public Presentation(String fileLocation) {
@@ -53,4 +66,31 @@ public record Presentation(
     return getSerialized().toString();
   }
 
+  public String name() {
+    return name;
+  }
+
+  public String year() {
+    return year;
+  }
+
+  public Language language() {
+    return language;
+  }
+
+  public void setLanguage(Language language) {
+    this.language = language;
+  }
+
+  public Set<String> tags() {
+    return tags;
+  }
+
+  public Set<String> topics() {
+    return topics;
+  }
+
+  public String folderLocation() {
+    return folderLocation;
+  }
 }

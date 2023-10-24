@@ -200,10 +200,12 @@ public class UI extends PUIFrame {
       addProperty();
     });
 
-    saveButton = new PUIText(this, "*");
+    saveButton = new PUIText(this, "S");
     saveButton.addActionListener(puiElement -> {
       if (Main.presentationManager != null) {
+        ((PUIText) saveButton).setText("#");
         Main.presentationManager.savePresentationInfo();
+        ((PUIText) saveButton).setText("S");
       }
     });
 
@@ -415,9 +417,10 @@ public class UI extends PUIFrame {
           // TODO
         }
         case "Tag" -> {
-          editTag();
+          editStringProperty(Main.presentationManager.allTags, selectedPresentation.tags());
         }
         case "Topic" -> {
+          editStringProperty(Main.presentationManager.allTopics, selectedPresentation.topics());
         }
         default -> throw new IllegalArgumentException("property not defined");
       }
@@ -475,17 +478,18 @@ public class UI extends PUIFrame {
     }
   }
 
-  private void editTag() {
-    String newProperty = editStringProperty(Main.presentationManager.allTags);
+  private void editStringProperty(Set<String> allPropertyValues,
+      Set<String> presentationPropertyList) {
+    String newProperty = editProperty(allPropertyValues);
     if (newProperty != null) {
-      selectedPresentation.tags().add(newProperty);
-      Main.presentationManager.allTags.add(newProperty);
+      presentationPropertyList.add(newProperty);
+      allPropertyValues.add(newProperty);
       updatePropertyDisplay();
       updateFilteredPresentationList();
     }
   }
 
-  private <T> String editStringProperty(Set<T> allPropertyValues) {
+  private <T> String editProperty(Set<T> allPropertyValues) {
     ArrayList<String> userSelection = new ArrayList<>();
     userSelection.add(""); // for new Properties
     allPropertyValues.forEach(e -> {
