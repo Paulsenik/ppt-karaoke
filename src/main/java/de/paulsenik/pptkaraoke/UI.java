@@ -262,7 +262,7 @@ public class UI extends PUIFrame {
         folderButton.setBounds(20, 100, w() / 3 - 30, 90);
         properties.setBounds(w() / 3 + 10, 190, w() / 3 - 20, h() - 210);
         propertyDisplay.setBounds(w() / 3 * 2 + 10, 190, w() / 3 - 30, h() - 210);
-        addPropertyButton.setBounds(w() / 3 * 2 + 10, 100, w() / 3 - 30, 90);
+        addPropertyButton.setBounds(w() / 3 * 2 + 10, 100, 90, 90);
       }
     } else {
       folderButton.setEnabled(false);
