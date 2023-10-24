@@ -127,7 +127,7 @@ public class UI extends PUIFrame {
 
     presentationDisplay = new PUIText(this, "...");
     presentationDisplay.setTextColor(Color.red);
-    presentationDisplay.setBackgroundColor(Color.white);
+    presentationDisplay.setBackgroundColor(new Color(0, 0, 0, 0));
     presentationDisplay.addActionListener(puiElement -> {
       if (presentationDisplay.getMetadata() != null
           && presentationDisplay.getMetadata() instanceof Presentation) {
@@ -416,6 +416,9 @@ public class UI extends PUIFrame {
         }
         case "Language" -> {
           String newProperty = editProperty(Main.presentationManager.allLanguages, false);
+          if (newProperty == null) {
+            return;
+          }
           Language l = Language.UNDEFINED;
 
           try {
@@ -424,12 +427,10 @@ public class UI extends PUIFrame {
             System.out.println("[UI] :: " + newProperty + " is not a Language!");
           }
 
-          if (newProperty != null && l != Language.UNDEFINED) {
-            selectedPresentation.setLanguage(l);
-            Main.presentationManager.allLanguages.add(l);
-            updatePropertyDisplay();
-            updateFilteredPresentationList();
-          }
+          selectedPresentation.setLanguage(l);
+          Main.presentationManager.allLanguages.add(l);
+          updatePropertyDisplay();
+          updateFilteredPresentationList();
         }
         case "Tag" -> {
           editStringProperty(Main.presentationManager.allTags, selectedPresentation.tags());

@@ -30,6 +30,7 @@ public class PresentationManager {
   private String folderName;
 
   public PresentationManager(String presentationDir) {
+    // Not pretty :(
     presentationTypes.add("ppt");
     presentationTypes.add("pps");
     presentationTypes.add("pptx");
@@ -38,6 +39,8 @@ public class PresentationManager {
     presentationTypes.add("odp");
     presentationTypes.add("otp");
     presentationTypes.add("pdf");
+
+    allLanguages.addAll(Arrays.stream(Language.values()).toList());
 
     if (presentationDir == null || presentationDir.isBlank() || !(new File(
         presentationDir).exists())) {
