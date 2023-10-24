@@ -4,6 +4,8 @@ import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
 import de.paulsenik.jpl.utils.PSystem;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +30,8 @@ public class PresentationManager {
   private String folderName;
 
   public PresentationManager(String presentationDir) {
+    presentationTypes.add("ppt");
+    presentationTypes.add("pps");
     presentationTypes.add("pptx");
     presentationTypes.add("ppsx");
     presentationTypes.add("pptm");
@@ -60,14 +64,19 @@ public class PresentationManager {
 
     Map<String, JSONObject> data = rawData == null ? null : getPresentationInfo(rawData);
 
-    for (String folderPath : subFolders) {
-      String[] files = PFolder.getFiles(folderPath, null);
-      if (files == null) {
+    for (String yearFolder : subFolders) {
+      ArrayList<String> files = new ArrayList<>(Arrays.asList(PFolder.getFiles(yearFolder, null)));
+      for (File f : PFolder.getAllFoldersOfRoot(new File(yearFolder))) {
+        files.addAll(Arrays.asList(PFolder.getFiles(f.getAbsolutePath(), null)));
+      }
+
+      if (files.isEmpty()) {
         continue;
       }
 
       for (String filePath : files) {
-        if (!presentationTypes.contains(PFile.getFileType(filePath))) {
+        if (!presentationTypes.contains(PFile.getFileType(filePath).toLowerCase())) {
+          System.err.println(filePath);
           continue;
         }
 
@@ -76,7 +85,7 @@ public class PresentationManager {
         Presentation p;
 
         if (jsonObj == null) {
-          p = new Presentation(filePath);
+          p = new Presentation(filePath, yearFolder);
           System.out.println("[PresentationManager] :: initialized :" + filePath);
         } else {
           Language language = Language.UNDEFINED;
@@ -104,7 +113,7 @@ public class PresentationManager {
             e.printStackTrace();
           }
 
-          p = new Presentation(filePath, language, tags, topics);
+          p = new Presentation(filePath, yearFolder, language, tags, topics);
           System.out.println("[PresentationManager] :: initialized (with data):" + filePath);
         }
 
@@ -117,6 +126,9 @@ public class PresentationManager {
         presentations.put(p.name(), p);
       }
     }
+
+    System.out.println("[PresentationManager] :: initialized " + presentations.size()
+        + " different Presentations from " + presentationDir);
   }
 
   public List<Presentation> filter(Set<String> years,

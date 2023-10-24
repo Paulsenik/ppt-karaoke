@@ -29,22 +29,23 @@ public class Presentation {
   }
 
 
-  public Presentation(String fileLocation) {
+  public Presentation(String fileLocation, String yearFolder) {
     this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation),
-        getYear(PFile.getParentFolder(fileLocation)),
+        getYear(PFolder.getName(yearFolder)),
         Language.UNDEFINED, new HashSet<>(), new HashSet<>());
   }
 
-  public Presentation(String fileLocation,
+  public Presentation(String fileLocation, String yearFolder,
       Language language, Set<String> tags, Set<String> topics) {
-    this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation), getYear(fileLocation),
+    this(PFile.getName(fileLocation), PFile.getParentFolder(fileLocation),
+        getYear(PFolder.getName(yearFolder)),
         language, tags, topics);
   }
 
-  private static String getYear(String folderLocation) {
+  private static String getYear(String folderName) {
     int year;
     try {
-      year = Integer.parseInt(PFolder.getName(PFile.getParentFolder(folderLocation)));
+      year = Integer.parseInt(folderName);
     } catch (NumberFormatException | NullPointerException e) {
       year = Calendar.getInstance().getWeekYear();
     }
