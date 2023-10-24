@@ -24,7 +24,7 @@ public class Main {
   public static Set<String> filterTopics = new HashSet<>();
 
   public static void main(String[] args) {
-    UI ui = new UI();
+    new UI();
   }
 
   public static void open(Presentation p) throws IOException {
