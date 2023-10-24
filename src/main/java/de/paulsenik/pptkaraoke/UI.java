@@ -335,6 +335,15 @@ public class UI extends PUIFrame {
   }
 
   public void updatePropertyDisplay() {
+    if (menu == 0 && ((PUIText) properties.getElements().get(selectedProperty)).getText()
+        .equals("Year")) {
+      addPropertyButton.setBackgroundColor(PUIElement.getDefaultColor(2));
+      addPropertyButton.setTextColor(PUIElement.getDefaultColor(3));
+    } else {
+      addPropertyButton.setBackgroundColor(PUIElement.getDefaultColor(0));
+      addPropertyButton.setTextColor(PUIElement.getDefaultColor(1));
+    }
+    
     if (menu == 0) { // edit
       if (selectedPresentation == null) {
         return;
@@ -343,7 +352,10 @@ public class UI extends PUIFrame {
       ArrayList<PUIElement> displayables = new ArrayList<>();
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
         case "Year" -> {
-          displayables.add(new PUIText(this, selectedPresentation.year()));
+          PUIText t = new PUIText(this, selectedPresentation.year());
+          t.setBackgroundColor(PUIElement.getDefaultColor(2));
+          t.setTextColor(PUIElement.getDefaultColor(3));
+          displayables.add(t);
         }
         case "Language" -> {
           PUIText t = new PUIText(this, String.valueOf(selectedPresentation.language()));
