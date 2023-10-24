@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.JFileChooser;
 
 public class UI extends PUIFrame {
@@ -414,30 +415,7 @@ public class UI extends PUIFrame {
           // TODO
         }
         case "Tag" -> {
-          ArrayList<String> userSelection = new ArrayList<>();
-          userSelection.add("");
-          userSelection.addAll(Main.presentationManager.allTags);
-          int tagIndex = getUserSelection("Select a new Tag", userSelection);
-
-          if (tagIndex < 0) { // invalid
-            System.out.println("invalid tagindex when selecting Tag!");
-          } else if (tagIndex == 0) { // new
-
-            String newTag = getUserInput("Create a new Tag", "tag");
-            if (newTag == null || newTag.isBlank() || Main.presentationManager.allTags.contains(
-                newTag)) {
-              System.err.println("[UI] :: Invalid Tag : " + newTag);
-            } else {
-              Main.presentationManager.allTags.add(newTag);
-              selectedPresentation.tags().add(newTag);
-              updatePropertyDisplay();
-              updateFilteredPresentationList();
-            }
-          } else { // existing
-            selectedPresentation.tags().add(userSelection.get(tagIndex));
-            updatePropertyDisplay();
-            updateFilteredPresentationList();
-          }
+          editTag();
         }
         case "Topic" -> {
         }
@@ -496,6 +474,41 @@ public class UI extends PUIFrame {
       System.err.println("Properties can only be added in edit- and filter-mode!");
     }
   }
+
+  private void editTag() {
+    String newProperty = editStringProperty(Main.presentationManager.allTags);
+    if (newProperty != null) {
+      selectedPresentation.tags().add(newProperty);
+      Main.presentationManager.allTags.add(newProperty);
+      updatePropertyDisplay();
+      updateFilteredPresentationList();
+    }
+  }
+
+  private <T> String editStringProperty(Set<T> allPropertyValues) {
+    ArrayList<String> userSelection = new ArrayList<>();
+    userSelection.add(""); // for new Properties
+    allPropertyValues.forEach(e -> {
+      userSelection.add(e.toString());
+    });
+    int propertyIndex = getUserSelection("Select a Property", userSelection);
+
+    if (propertyIndex < 0) { // invalid
+      System.err.println("invalid propertyIndex when selecting Tag!");
+    } else if (propertyIndex == 0) { // new
+      String newProperty = getUserInput("Create a new Tag", "tag");
+      if (newProperty == null || newProperty.isBlank() || allPropertyValues.contains(
+          newProperty)) {
+        System.err.println("[UI] :: Invalid Property : " + newProperty);
+      } else {
+        return newProperty;
+      }
+    } else { // existing
+      return userSelection.get(propertyIndex);
+    }
+    return null;
+  }
+
 
   public void updatePresentationList() {
     ArrayList<PUIElement> elements = new ArrayList<>();
