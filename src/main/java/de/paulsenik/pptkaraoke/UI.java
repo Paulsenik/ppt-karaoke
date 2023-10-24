@@ -333,13 +333,15 @@ public class UI extends PUIFrame {
 
       ArrayList<PUIElement> displayables = new ArrayList<>();
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
-        case "Year":
+        case "Year" -> {
           displayables.add(new PUIText(this, selectedPresentation.year()));
-          break;
-        case "Language":
-          displayables.add(new PUIText(this, String.valueOf(selectedPresentation.language())));
-          break;
-        case "Tag":
+        }
+        case "Language" -> {
+          PUIText t = new PUIText(this, String.valueOf(selectedPresentation.language()));
+          t.addActionListener(puiElement -> addProperty());
+          displayables.add(t);
+        }
+        case "Tag" -> {
           for (String tag : selectedPresentation.tags()) {
             PUIText t = new PUIText(this, tag);
             t.addActionListener(puiElement -> {
@@ -348,16 +350,17 @@ public class UI extends PUIFrame {
             });
             displayables.add(t);
           }
-          break;
-        case "Topic":
+        }
+        case "Topic" -> {
           for (String topic : selectedPresentation.topics()) {
             PUIText t = new PUIText(this, topic);
             t.addActionListener(puiElement -> selectedPresentation.topics().remove(topic));
             displayables.add(t);
           }
-          break;
-        default:
+        }
+        default -> {
           throw new IllegalArgumentException("property not defined");
+        }
       }
       propertyDisplay.clearElements();
       propertyDisplay.addAllElements(displayables);
@@ -418,6 +421,10 @@ public class UI extends PUIFrame {
   }
 
   public void addProperty() {
+    if (Main.presentationManager == null || selectedPresentation == null) {
+      return;
+    }
+
     if (menu == 0) { // edit-mode
 
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
