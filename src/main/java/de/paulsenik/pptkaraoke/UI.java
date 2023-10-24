@@ -108,6 +108,7 @@ public class UI extends PUIFrame {
       if (returnVal != JFileChooser.APPROVE_OPTION) {
         System.err.println("[FileManager] :: FileChooser canceled!");
       } else {
+        selectedPresentation = null;
         File f = folderChooser.getSelectedFile();
         Main.presentationManager = new PresentationManager(f.getAbsolutePath());
         folderButton.setText(PSystem.getFileSeparator() + f.getName());
@@ -414,7 +415,21 @@ public class UI extends PUIFrame {
           // not editable in editor (move file into folder)
         }
         case "Language" -> {
-          // TODO
+          String newProperty = editProperty(Main.presentationManager.allLanguages, false);
+          Language l = Language.UNDEFINED;
+
+          try {
+            l = Language.valueOf(newProperty);
+          } catch (IllegalArgumentException e) {
+            System.out.println("[UI] :: " + newProperty + " is not a Language!");
+          }
+
+          if (newProperty != null && l != Language.UNDEFINED) {
+            selectedPresentation.setLanguage(l);
+            Main.presentationManager.allLanguages.add(l);
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          }
         }
         case "Tag" -> {
           editStringProperty(Main.presentationManager.allTags, selectedPresentation.tags());
@@ -480,7 +495,7 @@ public class UI extends PUIFrame {
 
   private void editStringProperty(Set<String> allPropertyValues,
       Set<String> presentationPropertyList) {
-    String newProperty = editProperty(allPropertyValues);
+    String newProperty = editProperty(allPropertyValues, true);
     if (newProperty != null) {
       presentationPropertyList.add(newProperty);
       allPropertyValues.add(newProperty);
@@ -489,7 +504,7 @@ public class UI extends PUIFrame {
     }
   }
 
-  private <T> String editProperty(Set<T> allPropertyValues) {
+  private <T> String editProperty(Set<T> allPropertyValues, boolean createNew) {
     ArrayList<String> userSelection = new ArrayList<>();
     userSelection.add(""); // for new Properties
     allPropertyValues.forEach(e -> {
@@ -500,12 +515,16 @@ public class UI extends PUIFrame {
     if (propertyIndex < 0) { // invalid
       System.err.println("invalid propertyIndex when selecting Tag!");
     } else if (propertyIndex == 0) { // new
-      String newProperty = getUserInput("Create a new Tag", "tag");
-      if (newProperty == null || newProperty.isBlank() || allPropertyValues.contains(
-          newProperty)) {
-        System.err.println("[UI] :: Invalid Property : " + newProperty);
+      if (createNew) {
+        String newProperty = getUserInput("Create a new Tag", "tag");
+        if (newProperty == null || newProperty.isBlank() || allPropertyValues.contains(
+            newProperty)) {
+          System.err.println("[UI] :: Invalid Property : " + newProperty);
+        } else {
+          return newProperty;
+        }
       } else {
-        return newProperty;
+        return null;
       }
     } else { // existing
       return userSelection.get(propertyIndex);
