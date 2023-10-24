@@ -343,7 +343,7 @@ public class UI extends PUIFrame {
       addPropertyButton.setBackgroundColor(PUIElement.getDefaultColor(0));
       addPropertyButton.setTextColor(PUIElement.getDefaultColor(1));
     }
-    
+
     if (menu == 0) { // edit
       if (selectedPresentation == null) {
         return;
@@ -585,7 +585,8 @@ public class UI extends PUIFrame {
       updatePropertyDisplay();
     };
 
-    for (Presentation p : Main.presentationManager.presentations.values()) {
+    for (Presentation p : Presentation.getSortedPresentations(
+        Main.presentationManager.presentations.values())) {
       PUIText t = new PUIText(this, p.name());
       t.addActionListener(action);
       elements.add(t);

@@ -57,5 +57,4 @@ Select a Presentation-Rootfolder where the Subfolders are sorted by years
 - code-cleanup
 - Separate Constants-class
 - restructure
-- sorting of Presentation-List & Filtered-List after name and year
-
+- Add-Properties-dialog exclude already existing properties

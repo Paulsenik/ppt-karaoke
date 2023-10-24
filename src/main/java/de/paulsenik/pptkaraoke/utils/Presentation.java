@@ -2,8 +2,11 @@ package de.paulsenik.pptkaraoke.utils;
 
 import de.paulsenik.jpl.io.PFile;
 import de.paulsenik.jpl.io.PFolder;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.json.JSONObject;
 
@@ -14,8 +17,8 @@ public class Presentation {
   protected String folderLocation;
   protected String year; //String is easier to read and work with
   protected Language language;
-  Set<String> tags;
-  Set<String> topics;
+  protected Set<String> tags;
+  protected Set<String> topics;
 
   public Presentation(String name, String folderLocation, String year, Language language,
       Set<String> tags,
@@ -51,6 +54,12 @@ public class Presentation {
     }
 
     return String.valueOf(year);
+  }
+
+  public static List<Presentation> getSortedPresentations(Collection<Presentation> presentations) {
+    List<Presentation> l = new ArrayList<>(presentations);
+    l.sort((o1, o2) -> o1.name().compareToIgnoreCase(o2.name()));
+    return l;
   }
 
   public JSONObject getSerialized() {

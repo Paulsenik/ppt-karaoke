@@ -137,7 +137,7 @@ public class PresentationManager {
   public List<Presentation> filter(Set<String> years,
       Set<Language> languages, Set<String> tags, Set<String> topics) {
 
-    return presentations.values().stream().filter(p -> {
+    return Presentation.getSortedPresentations(presentations.values()).stream().filter(p -> {
 
       if (years != null && !years.isEmpty() && !years.contains(p.year())) {
         return false;
