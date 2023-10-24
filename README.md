@@ -3,14 +3,35 @@
 Manager of lokal PowerPoint presentations, PDFs & ODPs. Randomly select files
 with tag-filter for a funny karaoke-night
 
-*Currently no support for nested folders in the presentation-structure*
+## Usage
 
-**TODO**:
+Select a Presentation-Rootfolder where the Subfolders are sorted by years
 
-- LANGUAGE-support
-- code-cleanup
-- Separate Constants-class
-- restructure
+### Edit Presentations-tags
+
+- Select any Presentation in the left list
+- Select a Property you want to change (Year cannot be changed in the editor)
+- remove a value of a property by clicking on it
+- Add a value by clicking on "+"
+    - Select an existing value to add it toe the Presentation or..
+    - Select the empty value to create a new one
+        - Fill in the prompt
+- Save after you are done
+
+### Set up the Presentation-Filter
+
+- Select the funnel-icon
+- select any property in the middle of the screen
+    - remove a value of the property-filter by clicking on it
+    - Add a value by clicking on "+"
+        - Select an existing value to add it toe the Filter
+
+### Play
+
+- Select the funnel-icon
+- Click "GET" to get a random Presentation according to the filters set up before
+- Click on the name of the Presentation in red to open it
+- Enjoy...
 
 ## Presentation-Stucture
 
@@ -30,3 +51,11 @@ with tag-filter for a funny karaoke-night
     - "audio"
 - language
 - year
+
+# **TODO**:
+
+- LANGUAGE-support
+- code-cleanup
+- Separate Constants-class
+- restructure
+
