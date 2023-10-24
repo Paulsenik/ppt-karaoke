@@ -44,7 +44,7 @@ public class Presentation {
   private static String getYear(String folderLocation) {
     int year;
     try {
-      year = Integer.parseInt(PFolder.getName(folderLocation));
+      year = Integer.parseInt(PFolder.getName(PFile.getParentFolder(folderLocation)));
     } catch (NumberFormatException | NullPointerException e) {
       year = Calendar.getInstance().getWeekYear();
     }
