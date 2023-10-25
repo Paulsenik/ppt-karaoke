@@ -14,6 +14,8 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import javax.swing.JFileChooser;
 
@@ -459,7 +461,11 @@ public class UI extends PUIFrame {
           // not editable in editor (move file into folder)
         }
         case "Language" -> {
-          String newProperty = editProperty(Main.presentationManager.allLanguages, false);
+          List<String> prevValues = new ArrayList<>();
+          prevValues.add(selectedPresentation.language().name());
+
+          String newProperty = editProperty(Main.presentationManager.allLanguages, prevValues,
+              false);
           if (newProperty == null) {
             return;
           }
@@ -488,7 +494,12 @@ public class UI extends PUIFrame {
     } else if (menu == 1) { // filter-mode
       switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
         case "Year" -> {
-          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allYears);
+          ArrayList<String> values = new ArrayList<>();
+          Main.presentationManager.allYears.forEach(e -> {
+            if (!Main.filterYears.contains(e)) {
+              values.add(e);
+            }
+          });
 
           if (!Main.presentationManager.allYears.isEmpty()) {
             int selected = getUserSelection("Years", values);
@@ -499,7 +510,11 @@ public class UI extends PUIFrame {
         }
         case "Language" -> {
           ArrayList<String> values = new ArrayList<>();
-          Main.presentationManager.allLanguages.forEach(l -> values.add(l.name()));
+          Main.presentationManager.allLanguages.forEach(l -> {
+            if (!Main.filterLanguages.contains(l)) {
+              values.add(l.name());
+            }
+          });
 
           if (!values.isEmpty()) {
             int selected = getUserSelection("Languages", values);
@@ -510,7 +525,12 @@ public class UI extends PUIFrame {
           }
         }
         case "Tag" -> {
-          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTags);
+          ArrayList<String> values = new ArrayList<>();
+          Main.presentationManager.allTags.forEach(e -> {
+            if (!Main.filterTags.contains(e)) {
+              values.add(e);
+            }
+          });
 
           if (!Main.presentationManager.allTags.isEmpty()) {
             int selected = getUserSelection("Tags", values);
@@ -520,7 +540,12 @@ public class UI extends PUIFrame {
           }
         }
         case "Topic" -> {
-          ArrayList<String> values = new ArrayList<>(Main.presentationManager.allTopics);
+          ArrayList<String> values = new ArrayList<>();
+          Main.presentationManager.allTopics.forEach(e -> {
+            if (!Main.filterTags.contains(e)) {
+              values.add(e);
+            }
+          });
 
           if (!Main.presentationManager.allTopics.isEmpty()) {
             int selected = getUserSelection("Topics", values);
@@ -540,7 +565,7 @@ public class UI extends PUIFrame {
 
   private void editStringProperty(Set<String> allPropertyValues,
       Set<String> presentationPropertyList) {
-    String newProperty = editProperty(allPropertyValues, true);
+    String newProperty = editProperty(allPropertyValues, presentationPropertyList, true);
     if (newProperty != null) {
       presentationPropertyList.add(newProperty);
       allPropertyValues.add(newProperty);
@@ -549,11 +574,14 @@ public class UI extends PUIFrame {
     }
   }
 
-  private <T> String editProperty(Set<T> allPropertyValues, boolean createNew) {
+  private <T> String editProperty(Set<T> allPropertyValues, Collection<String> existing,
+      boolean createNew) {
     ArrayList<String> userSelection = new ArrayList<>();
     userSelection.add(""); // for new Properties
     allPropertyValues.forEach(e -> {
-      userSelection.add(e.toString());
+      if (!existing.contains(e.toString())) {
+        userSelection.add(e.toString());
+      }
     });
     int propertyIndex = getUserSelection("Select a Property", userSelection);
 
@@ -589,7 +617,6 @@ public class UI extends PUIFrame {
       puiElement.setBackgroundColor(PUIElement.getDefaultColor(10));
       Presentation newSelectedPresentation = Main.presentationManager.presentations.get(
           ((PUIText) puiElement).getText());
-      updatePropertyDisplay();
 
       if (selectedPresentation == newSelectedPresentation) {
         try {
@@ -602,6 +629,8 @@ public class UI extends PUIFrame {
       } else {
         selectedPresentation = newSelectedPresentation;
       }
+      
+      updatePropertyDisplay();
     };
 
     for (Presentation p : Presentation.getSortedPresentations(

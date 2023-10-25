@@ -59,5 +59,3 @@ Select a Presentation-Rootfolder where the Subfolders are sorted by years
 - code-cleanup
 - Separate Constants-class
 - restructure
-- New Features
-    - Add-Properties-dialog exclude already existing properties
