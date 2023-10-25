@@ -318,17 +318,6 @@ public class UI extends PUIFrame {
     }
   }
 
-  public void selectProperty(int property) {
-    ArrayList<PUIElement> elements = properties.getElements();
-    elements.get(selectedProperty).setBackgroundColor(PUIElement.getDefaultColor(0));
-    elements.get(property).setBackgroundColor(PUIElement.getDefaultColor(10));
-    this.selectedProperty = property;
-
-    updatePropertyDisplay();
-
-    updateElements();
-  }
-
   public void updateFilteredPresentationList() {
     ArrayList<PUIElement> presentations = new ArrayList<>();
     Main.presentationManager.filter(Main.filterYears,
@@ -342,6 +331,43 @@ public class UI extends PUIFrame {
     filteredPresentationList.addAllElements(presentations);
   }
 
+  public void updatePresentationList() {
+    ArrayList<PUIElement> elements = new ArrayList<>();
+
+    PUIAction action = puiElement -> {
+      // prettier if draw()-method checks for selected Element
+      for (PUIElement e : presentationList.getElements()) {
+        e.setBackgroundColor(PUIElement.getDefaultColor(0));
+      }
+      puiElement.setBackgroundColor(PUIElement.getDefaultColor(10));
+      Presentation newSelectedPresentation = Main.presentationManager.presentations.get(
+          ((PUIText) puiElement).getText());
+
+      if (selectedPresentation == newSelectedPresentation) {
+        try {
+          Main.open(selectedPresentation);
+        } catch (IOException e) {
+          sendUserError("An error occurred when opening the selected Presentation");
+          System.err.println("[UI] :: presentation could not be opened!");
+          e.printStackTrace();
+        }
+      } else {
+        selectedPresentation = newSelectedPresentation;
+      }
+
+      updatePropertyDisplay();
+    };
+
+    for (Presentation p : Presentation.getSortedPresentations(
+        Main.presentationManager.presentations.values())) {
+      PUIText t = new PUIText(this, p.name());
+      t.addActionListener(action);
+      elements.add(t);
+    }
+    presentationList.clearElements();
+    presentationList.addAllElements(elements);
+  }
+
   public void updatePropertyDisplay() {
     if (menu == 0 && ((PUIText) properties.getElements().get(selectedProperty)).getText()
         .equals("Year")) {
@@ -353,100 +379,118 @@ public class UI extends PUIFrame {
     }
 
     if (menu == 0) { // edit
-      if (selectedPresentation == null) {
-        return;
-      }
-
-      ArrayList<PUIElement> displayables = new ArrayList<>();
-      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
-        case "Year" -> {
-          PUIText t = new PUIText(this, selectedPresentation.year());
-          t.setBackgroundColor(PUIElement.getDefaultColor(2));
-          t.setTextColor(PUIElement.getDefaultColor(3));
-          displayables.add(t);
-        }
-        case "Language" -> {
-          PUIText t = new PUIText(this, String.valueOf(selectedPresentation.language()));
-          t.addActionListener(puiElement -> addProperty());
-          displayables.add(t);
-        }
-        case "Tag" -> {
-          for (String tag : selectedPresentation.tags()) {
-            PUIText t = new PUIText(this, tag);
-            t.addActionListener(puiElement -> {
-              selectedPresentation.tags().remove(tag);
-              updatePropertyDisplay();
-            });
-            displayables.add(t);
-          }
-        }
-        case "Topic" -> {
-          for (String topic : selectedPresentation.topics()) {
-            PUIText t = new PUIText(this, topic);
-            t.addActionListener(puiElement -> selectedPresentation.topics().remove(topic));
-            displayables.add(t);
-          }
-        }
-        default -> {
-          throw new IllegalArgumentException("property not defined");
-        }
-      }
-      propertyDisplay.clearElements();
-      propertyDisplay.addAllElements(displayables);
-
+      updateMenuPropertyDisplay();
     } else if (menu == 1) { // filter
-      ArrayList<PUIElement> displayables = new ArrayList<>();
-      switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
-        case "Year":
-          for (String s : Main.filterYears) {
-            PUIText yearText = new PUIText(this, s);
-            yearText.addActionListener(puiElement -> {
-              Main.filterYears.remove(s);
-              updatePropertyDisplay();
-              updateFilteredPresentationList();
-            });
-            displayables.add(yearText);
-          }
-          break;
-        case "Language":
-          for (Language l : Main.filterLanguages) {
-            PUIText langText = new PUIText(this, l.toString());
-            langText.addActionListener(puiElement -> {
-              Main.filterLanguages.remove(Language.valueOf(((PUIText) puiElement).getText()));
-              updatePropertyDisplay();
-              updateFilteredPresentationList();
-            });
-            displayables.add(langText);
-          }
-          break;
-        case "Tag":
-          for (String s : Main.filterTags) {
-            PUIText text = new PUIText(this, s);
-            text.addActionListener(puiElement -> {
-              Main.filterTags.remove(s);
-              updatePropertyDisplay();
-              updateFilteredPresentationList();
-            });
-            displayables.add(text);
-          }
-          break;
-        case "Topic":
-          for (String s : Main.filterTopics) {
-            PUIText text = new PUIText(this, s);
-            text.addActionListener(puiElement -> {
-              Main.filterTopics.remove(s);
-              updatePropertyDisplay();
-              updateFilteredPresentationList();
-            });
-            displayables.add(text);
-          }
-          break;
-        default:
-          throw new IllegalArgumentException("property not defined");
-      }
-      propertyDisplay.clearElements();
-      propertyDisplay.addAllElements(displayables);
+      updateFilterPropertyDisplay();
     }
+  }
+
+  private void updateMenuPropertyDisplay() {
+    if (selectedPresentation == null) {
+      return;
+    }
+
+    ArrayList<PUIElement> displayables = new ArrayList<>();
+    switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+      case "Year" -> {
+        PUIText t = new PUIText(this, selectedPresentation.year());
+        t.setBackgroundColor(PUIElement.getDefaultColor(2));
+        t.setTextColor(PUIElement.getDefaultColor(3));
+        displayables.add(t);
+      }
+      case "Language" -> {
+        PUIText t = new PUIText(this, String.valueOf(selectedPresentation.language()));
+        t.addActionListener(puiElement -> addProperty());
+        displayables.add(t);
+      }
+      case "Tag" -> {
+        for (String tag : selectedPresentation.tags()) {
+          PUIText t = new PUIText(this, tag);
+          t.addActionListener(puiElement -> {
+            selectedPresentation.tags().remove(tag);
+            updatePropertyDisplay();
+          });
+          displayables.add(t);
+        }
+      }
+      case "Topic" -> {
+        for (String topic : selectedPresentation.topics()) {
+          PUIText t = new PUIText(this, topic);
+          t.addActionListener(puiElement -> selectedPresentation.topics().remove(topic));
+          displayables.add(t);
+        }
+      }
+      default -> {
+        throw new IllegalArgumentException("property not defined");
+      }
+    }
+    propertyDisplay.clearElements();
+    propertyDisplay.addAllElements(displayables);
+  }
+
+  private void updateFilterPropertyDisplay() {
+    ArrayList<PUIElement> displayables = new ArrayList<>();
+    switch (((PUIText) properties.getElements().get(selectedProperty)).getText()) {
+      case "Year":
+        for (String s : Main.filterYears) {
+          PUIText yearText = new PUIText(this, s);
+          yearText.addActionListener(puiElement -> {
+            Main.filterYears.remove(s);
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          });
+          displayables.add(yearText);
+        }
+        break;
+      case "Language":
+        for (Language l : Main.filterLanguages) {
+          PUIText langText = new PUIText(this, l.toString());
+          langText.addActionListener(puiElement -> {
+            Main.filterLanguages.remove(Language.valueOf(((PUIText) puiElement).getText()));
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          });
+          displayables.add(langText);
+        }
+        break;
+      case "Tag":
+        for (String s : Main.filterTags) {
+          PUIText text = new PUIText(this, s);
+          text.addActionListener(puiElement -> {
+            Main.filterTags.remove(s);
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          });
+          displayables.add(text);
+        }
+        break;
+      case "Topic":
+        for (String s : Main.filterTopics) {
+          PUIText text = new PUIText(this, s);
+          text.addActionListener(puiElement -> {
+            Main.filterTopics.remove(s);
+            updatePropertyDisplay();
+            updateFilteredPresentationList();
+          });
+          displayables.add(text);
+        }
+        break;
+      default:
+        throw new IllegalArgumentException("property not defined");
+    }
+    propertyDisplay.clearElements();
+    propertyDisplay.addAllElements(displayables);
+  }
+
+  public void selectProperty(int property) {
+    ArrayList<PUIElement> elements = properties.getElements();
+    elements.get(selectedProperty).setBackgroundColor(PUIElement.getDefaultColor(0));
+    elements.get(property).setBackgroundColor(PUIElement.getDefaultColor(10));
+    this.selectedProperty = property;
+
+    updatePropertyDisplay();
+
+    updateElements();
   }
 
   public void addProperty() {
@@ -603,44 +647,6 @@ public class UI extends PUIFrame {
       return userSelection.get(propertyIndex);
     }
     return null;
-  }
-
-
-  public void updatePresentationList() {
-    ArrayList<PUIElement> elements = new ArrayList<>();
-
-    PUIAction action = puiElement -> {
-      // prettier if draw()-method checks for selected Element
-      for (PUIElement e : presentationList.getElements()) {
-        e.setBackgroundColor(PUIElement.getDefaultColor(0));
-      }
-      puiElement.setBackgroundColor(PUIElement.getDefaultColor(10));
-      Presentation newSelectedPresentation = Main.presentationManager.presentations.get(
-          ((PUIText) puiElement).getText());
-
-      if (selectedPresentation == newSelectedPresentation) {
-        try {
-          Main.open(selectedPresentation);
-        } catch (IOException e) {
-          sendUserError("An error occurred when opening the selected Presentation");
-          System.err.println("[UI] :: presentation could not be opened!");
-          e.printStackTrace();
-        }
-      } else {
-        selectedPresentation = newSelectedPresentation;
-      }
-      
-      updatePropertyDisplay();
-    };
-
-    for (Presentation p : Presentation.getSortedPresentations(
-        Main.presentationManager.presentations.values())) {
-      PUIText t = new PUIText(this, p.name());
-      t.addActionListener(action);
-      elements.add(t);
-    }
-    presentationList.clearElements();
-    presentationList.addAllElements(elements);
   }
 
   public void changeMenu(int newMenu) {

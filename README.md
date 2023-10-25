@@ -59,3 +59,5 @@ Select a Presentation-Rootfolder where the Subfolders are sorted by years
 - code-cleanup
 - Separate Constants-class
 - restructure
+- known bugs:
+    - when adding a new property to a presentation, the filtered list does not automatically update
