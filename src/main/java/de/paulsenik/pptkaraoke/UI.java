@@ -127,7 +127,12 @@ public class UI extends PUIFrame {
       } else {
         selectedPresentation = null;
         File f = folderChooser.getSelectedFile();
-        Main.presentationManager = new PresentationManager(f.getAbsolutePath());
+        try {
+          Main.presentationManager = new PresentationManager(f.getAbsolutePath());
+        } catch (Exception e) {
+          sendUserError("A Problem occured. Closing...");
+          System.exit(0);
+        }
         folderButton.setText(PSystem.getFileSeparator() + f.getName());
         updatePresentationList();
         updateFilteredPresentationList();

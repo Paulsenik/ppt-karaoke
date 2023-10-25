@@ -53,7 +53,7 @@ public class PresentationManager {
       initPresentations();
     } catch (Exception e) {
       System.err.println("Initialization Error! Config may not be initialized completely!");
-      e.printStackTrace();
+      throw e;
     }
   }
 
