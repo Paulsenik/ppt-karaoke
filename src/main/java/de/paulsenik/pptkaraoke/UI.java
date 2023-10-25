@@ -225,8 +225,8 @@ public class UI extends PUIFrame {
     });
 
     saveButton = new PUIText(this, "Save");
-    saveButton.setDraw(null);
-    saveButton.setTextColor(PUIElement.getDefaultColor(10));
+    saveButton.setBackgroundColor(PUIElement.getDefaultColor(10));
+    saveButton.setTextColor(Color.white);
     saveButton.addActionListener(puiElement -> {
       if (Main.presentationManager != null) {
         ((PUIText) saveButton).setText("ooo");
