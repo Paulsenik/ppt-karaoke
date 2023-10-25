@@ -9,6 +9,8 @@ Select a Presentation-Rootfolder where the Subfolders are sorted by years
 
 ### Edit Presentations-tags
 
+- Click on an already selected Presentation to open it
+
 - Select any Presentation in the left list
 - Select a Property you want to change (Year cannot be changed in the editor)
 - remove a value of a property by clicking on it
@@ -59,4 +61,3 @@ Select a Presentation-Rootfolder where the Subfolders are sorted by years
 - restructure
 - New Features
     - Add-Properties-dialog exclude already existing properties
-    - Open a Presentation in the edit-tab

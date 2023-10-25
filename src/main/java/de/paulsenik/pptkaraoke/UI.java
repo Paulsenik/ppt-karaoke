@@ -158,6 +158,7 @@ public class UI extends PUIFrame {
           Main.open(p);
           setTitle(frameTitle + " :: " + p.name());
         } catch (IOException e) {
+          sendUserError("An error occurred when opening a Presentation");
           System.err.println("[UI] :: presentation could not be opened!");
           e.printStackTrace();
         }
@@ -581,13 +582,26 @@ public class UI extends PUIFrame {
     ArrayList<PUIElement> elements = new ArrayList<>();
 
     PUIAction action = puiElement -> {
+      // prettier if draw()-method checks for selected Element
       for (PUIElement e : presentationList.getElements()) {
         e.setBackgroundColor(PUIElement.getDefaultColor(0));
       }
       puiElement.setBackgroundColor(PUIElement.getDefaultColor(10));
-      selectedPresentation = Main.presentationManager.presentations.get(
+      Presentation newSelectedPresentation = Main.presentationManager.presentations.get(
           ((PUIText) puiElement).getText());
       updatePropertyDisplay();
+
+      if (selectedPresentation == newSelectedPresentation) {
+        try {
+          Main.open(selectedPresentation);
+        } catch (IOException e) {
+          sendUserError("An error occurred when opening the selected Presentation");
+          System.err.println("[UI] :: presentation could not be opened!");
+          e.printStackTrace();
+        }
+      } else {
+        selectedPresentation = newSelectedPresentation;
+      }
     };
 
     for (Presentation p : Presentation.getSortedPresentations(
